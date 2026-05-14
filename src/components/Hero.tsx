@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Github } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Terminal } from "./Terminal";
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -52,20 +53,20 @@ export function Hero() {
           transition={{ delay: 0.28, duration: 0.9, ease }}
           className="mt-10 flex items-center justify-center gap-3"
         >
-          <a
-            href="#beta"
+          <Link
+            to="/request-access"
             className="group inline-flex items-center gap-2 rounded-full bg-foreground text-background px-5 py-2.5 text-sm font-medium transition-all hover:scale-[1.02] hover:shadow-[0_10px_40px_-10px_rgba(255,255,255,0.25)]"
           >
-            Request beta access
+            Request access
             <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-          </a>
-          <a
-            href="https://github.com"
+          </Link>
+          <Link
+            to="/changelog"
             className="inline-flex items-center gap-2 rounded-full border hairline bg-surface/60 backdrop-blur px-5 py-2.5 text-sm text-foreground/90 hover:bg-surface-elevated transition-colors"
           >
-            <Github className="size-4" />
-            Star on GitHub
-          </a>
+            View changelog
+            <ArrowUpRight className="size-3.5" />
+          </Link>
         </motion.div>
 
         <motion.p
