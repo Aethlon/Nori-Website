@@ -12,10 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as RequestAccessRouteImport } from './routes/request-access'
 import { Route as ReportRouteImport } from './routes/report'
 import { Route as FeedbackRouteImport } from './routes/feedback'
+import { Route as DownloadRouteImport } from './routes/download'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ChangelogRouteImport } from './routes/changelog'
-import { Route as AccessRouteImport } from './routes/access'
 import { Route as IndexRouteImport } from './routes/index'
 
 const RequestAccessRoute = RequestAccessRouteImport.update({
@@ -33,6 +33,11 @@ const FeedbackRoute = FeedbackRouteImport.update({
   path: '/feedback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DownloadRoute = DownloadRouteImport.update({
+  id: '/download',
+  path: '/download',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DocsRoute = DocsRouteImport.update({
   id: '/docs',
   path: '/docs',
@@ -48,11 +53,6 @@ const ChangelogRoute = ChangelogRouteImport.update({
   path: '/changelog',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AccessRoute = AccessRouteImport.update({
-  id: '/access',
-  path: '/access',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -61,20 +61,20 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/access': typeof AccessRoute
   '/changelog': typeof ChangelogRoute
   '/contact': typeof ContactRoute
   '/docs': typeof DocsRoute
+  '/download': typeof DownloadRoute
   '/feedback': typeof FeedbackRoute
   '/report': typeof ReportRoute
   '/request-access': typeof RequestAccessRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/access': typeof AccessRoute
   '/changelog': typeof ChangelogRoute
   '/contact': typeof ContactRoute
   '/docs': typeof DocsRoute
+  '/download': typeof DownloadRoute
   '/feedback': typeof FeedbackRoute
   '/report': typeof ReportRoute
   '/request-access': typeof RequestAccessRoute
@@ -82,10 +82,10 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/access': typeof AccessRoute
   '/changelog': typeof ChangelogRoute
   '/contact': typeof ContactRoute
   '/docs': typeof DocsRoute
+  '/download': typeof DownloadRoute
   '/feedback': typeof FeedbackRoute
   '/report': typeof ReportRoute
   '/request-access': typeof RequestAccessRoute
@@ -94,30 +94,30 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/access'
     | '/changelog'
     | '/contact'
     | '/docs'
+    | '/download'
     | '/feedback'
     | '/report'
     | '/request-access'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/access'
     | '/changelog'
     | '/contact'
     | '/docs'
+    | '/download'
     | '/feedback'
     | '/report'
     | '/request-access'
   id:
     | '__root__'
     | '/'
-    | '/access'
     | '/changelog'
     | '/contact'
     | '/docs'
+    | '/download'
     | '/feedback'
     | '/report'
     | '/request-access'
@@ -125,10 +125,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AccessRoute: typeof AccessRoute
   ChangelogRoute: typeof ChangelogRoute
   ContactRoute: typeof ContactRoute
   DocsRoute: typeof DocsRoute
+  DownloadRoute: typeof DownloadRoute
   FeedbackRoute: typeof FeedbackRoute
   ReportRoute: typeof ReportRoute
   RequestAccessRoute: typeof RequestAccessRoute
@@ -157,6 +157,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FeedbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/download': {
+      id: '/download'
+      path: '/download'
+      fullPath: '/download'
+      preLoaderRoute: typeof DownloadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/docs': {
       id: '/docs'
       path: '/docs'
@@ -178,13 +185,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChangelogRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/access': {
-      id: '/access'
-      path: '/access'
-      fullPath: '/access'
-      preLoaderRoute: typeof AccessRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -197,10 +197,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AccessRoute: AccessRoute,
   ChangelogRoute: ChangelogRoute,
   ContactRoute: ContactRoute,
   DocsRoute: DocsRoute,
+  DownloadRoute: DownloadRoute,
   FeedbackRoute: FeedbackRoute,
   ReportRoute: ReportRoute,
   RequestAccessRoute: RequestAccessRoute,
