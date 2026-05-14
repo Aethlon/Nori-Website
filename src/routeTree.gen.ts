@@ -9,12 +9,48 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AccessRouteImport } from './routes/access'
+import { Route as RequestAccessRouteImport } from './routes/request-access'
+import { Route as ReportRouteImport } from './routes/report'
+import { Route as FeedbackRouteImport } from './routes/feedback'
+import { Route as DownloadRouteImport } from './routes/download'
+import { Route as DocsRouteImport } from './routes/docs'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ChangelogRouteImport } from './routes/changelog'
 import { Route as IndexRouteImport } from './routes/index'
 
-const AccessRoute = AccessRouteImport.update({
-  id: '/access',
-  path: '/access',
+const RequestAccessRoute = RequestAccessRouteImport.update({
+  id: '/request-access',
+  path: '/request-access',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportRoute = ReportRouteImport.update({
+  id: '/report',
+  path: '/report',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeedbackRoute = FeedbackRouteImport.update({
+  id: '/feedback',
+  path: '/feedback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DownloadRoute = DownloadRouteImport.update({
+  id: '/download',
+  path: '/download',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRoute = DocsRouteImport.update({
+  id: '/docs',
+  path: '/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChangelogRoute = ChangelogRouteImport.update({
+  id: '/changelog',
+  path: '/changelog',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -25,37 +61,128 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/access': typeof AccessRoute
+  '/changelog': typeof ChangelogRoute
+  '/contact': typeof ContactRoute
+  '/docs': typeof DocsRoute
+  '/download': typeof DownloadRoute
+  '/feedback': typeof FeedbackRoute
+  '/report': typeof ReportRoute
+  '/request-access': typeof RequestAccessRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/access': typeof AccessRoute
+  '/changelog': typeof ChangelogRoute
+  '/contact': typeof ContactRoute
+  '/docs': typeof DocsRoute
+  '/download': typeof DownloadRoute
+  '/feedback': typeof FeedbackRoute
+  '/report': typeof ReportRoute
+  '/request-access': typeof RequestAccessRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/access': typeof AccessRoute
+  '/changelog': typeof ChangelogRoute
+  '/contact': typeof ContactRoute
+  '/docs': typeof DocsRoute
+  '/download': typeof DownloadRoute
+  '/feedback': typeof FeedbackRoute
+  '/report': typeof ReportRoute
+  '/request-access': typeof RequestAccessRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/access'
+  fullPaths:
+    | '/'
+    | '/changelog'
+    | '/contact'
+    | '/docs'
+    | '/download'
+    | '/feedback'
+    | '/report'
+    | '/request-access'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/access'
-  id: '__root__' | '/' | '/access'
+  to:
+    | '/'
+    | '/changelog'
+    | '/contact'
+    | '/docs'
+    | '/download'
+    | '/feedback'
+    | '/report'
+    | '/request-access'
+  id:
+    | '__root__'
+    | '/'
+    | '/changelog'
+    | '/contact'
+    | '/docs'
+    | '/download'
+    | '/feedback'
+    | '/report'
+    | '/request-access'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AccessRoute: typeof AccessRoute
+  ChangelogRoute: typeof ChangelogRoute
+  ContactRoute: typeof ContactRoute
+  DocsRoute: typeof DocsRoute
+  DownloadRoute: typeof DownloadRoute
+  FeedbackRoute: typeof FeedbackRoute
+  ReportRoute: typeof ReportRoute
+  RequestAccessRoute: typeof RequestAccessRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/access': {
-      id: '/access'
-      path: '/access'
-      fullPath: '/access'
-      preLoaderRoute: typeof AccessRouteImport
+    '/request-access': {
+      id: '/request-access'
+      path: '/request-access'
+      fullPath: '/request-access'
+      preLoaderRoute: typeof RequestAccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/report': {
+      id: '/report'
+      path: '/report'
+      fullPath: '/report'
+      preLoaderRoute: typeof ReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/feedback': {
+      id: '/feedback'
+      path: '/feedback'
+      fullPath: '/feedback'
+      preLoaderRoute: typeof FeedbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/download': {
+      id: '/download'
+      path: '/download'
+      fullPath: '/download'
+      preLoaderRoute: typeof DownloadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs': {
+      id: '/docs'
+      path: '/docs'
+      fullPath: '/docs'
+      preLoaderRoute: typeof DocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/changelog': {
+      id: '/changelog'
+      path: '/changelog'
+      fullPath: '/changelog'
+      preLoaderRoute: typeof ChangelogRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -70,7 +197,13 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AccessRoute: AccessRoute,
+  ChangelogRoute: ChangelogRoute,
+  ContactRoute: ContactRoute,
+  DocsRoute: DocsRoute,
+  DownloadRoute: DownloadRoute,
+  FeedbackRoute: FeedbackRoute,
+  ReportRoute: ReportRoute,
+  RequestAccessRoute: RequestAccessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

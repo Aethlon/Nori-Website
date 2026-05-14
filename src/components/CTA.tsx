@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Github } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 export function CTA() {
   return (
@@ -18,23 +19,23 @@ export function CTA() {
           Built for developers who live in the terminal.
         </h2>
         <p className="mt-6 text-muted-foreground max-w-lg mx-auto leading-relaxed">
-          Join a small group of developers shaping what a modern terminal feels like.
+          Nori is in closed Developer Preview. Selected users are invited as access opens.
         </p>
-        <div className="mt-10 flex items-center justify-center gap-3">
-          <a
-            href="#beta"
+        <div className="mt-10 flex items-center justify-center gap-3 flex-wrap">
+          <Link
+            to="/request-access"
             className="group inline-flex items-center gap-2 rounded-full bg-foreground text-background px-5 py-2.5 text-sm font-medium hover:scale-[1.02] transition-transform"
           >
-            Request beta access
+            Request access
             <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-          </a>
-          <a
-            href="https://github.com"
+          </Link>
+          <Link
+            to="/changelog"
             className="inline-flex items-center gap-2 rounded-full border hairline bg-surface/60 backdrop-blur px-5 py-2.5 text-sm hover:bg-surface-elevated transition-colors"
           >
-            <Github className="size-4" />
-            Star on GitHub
-          </a>
+            View changelog
+            <ArrowUpRight className="size-3.5" />
+          </Link>
         </div>
       </motion.div>
     </section>
