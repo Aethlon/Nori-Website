@@ -37,7 +37,7 @@ export function Nav() {
               return (
                 <Link
                   key={item.to}
-                  to={item.to}
+                  to={item.to as "/"}
                   className={`relative px-3 py-1.5 rounded-full transition-colors ${
                     active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                   }`}
