@@ -1,13 +1,13 @@
 import { motion, useScroll, useSpring } from "framer-motion";
 import { Link, useLocation } from "@tanstack/react-router";
 
-const navItems = [
+const navItems: { to: string; label: string; exact?: boolean }[] = [
   { to: "/", label: "Product", exact: true },
   { to: "/changelog", label: "Changelog" },
   { to: "/docs", label: "Docs" },
   { to: "/feedback", label: "Feedback" },
   { to: "/contact", label: "Contact" },
-] as const;
+];
 
 export function Nav() {
   const { scrollYProgress } = useScroll();
