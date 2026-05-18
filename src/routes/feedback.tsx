@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useReveal } from "@/hooks/use-reveal";
-import { ArrowUpRight, Check } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 export const Route = createFileRoute("/feedback")({
   component: FeedbackPage,
