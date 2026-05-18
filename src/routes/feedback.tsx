@@ -222,17 +222,28 @@ function BareInput({
   placeholder?: string;
   type?: string;
 }) {
+  const [focused, setFocused] = useState(false);
   return (
-    <div className="flex-1 border-b hairline px-1 py-5">
-      <label className="block text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground/70 mb-3">
+    <div className="relative flex-1 px-1 py-5 group">
+      <span
+        aria-hidden
+        className={`absolute left-0 right-0 bottom-0 h-px origin-left transition-transform duration-500 ${
+          focused ? "bg-jade scale-x-100" : "bg-foreground/10 scale-x-100"
+        }`}
+        style={{ boxShadow: focused ? "0 0 8px var(--jade)" : undefined }}
+      />
+      <label className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground/70 mb-3">
         {label}
+        {focused && <span className="size-[5px] rounded-full bg-jade animate-pulse" />}
       </label>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
         placeholder={placeholder}
-        className="w-full bg-transparent outline-none text-[16px] text-foreground placeholder:text-muted-foreground/40"
+        className="w-full bg-transparent outline-none text-[16px] text-foreground placeholder:text-muted-foreground/40 caret-jade"
       />
     </div>
   );
