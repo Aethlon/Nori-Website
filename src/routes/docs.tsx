@@ -314,7 +314,7 @@ function SidebarRail({
       </svg>
 
       <nav className="relative flex flex-col gap-0.5">
-        {sections.map((s, i) => {
+        {sections.map((s: Section, i: number) => {
           const isActive = s.id === active;
           const isPast = i < activeIndex;
           const Icon = s.icon;
