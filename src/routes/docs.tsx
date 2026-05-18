@@ -16,10 +16,17 @@ export const Route = createFileRoute("/docs")({
   }),
 });
 
+type Section = {
+  id: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  eyebrow: string;
+};
+
 const NERD_FONT_URL =
   "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip";
 
-const sections = [
+const sections: Section[] = [
   { id: "overview", label: "Overview", icon: FileText, eyebrow: "01" },
   { id: "install", label: "Install", icon: TerminalIcon, eyebrow: "02" },
   { id: "fonts", label: "Fonts & glyphs", icon: Type, eyebrow: "03" },
@@ -278,11 +285,11 @@ function SidebarRail({
   active,
   progress,
 }: {
-  sections: typeof sections;
+  sections: Section[];
   active: string;
   progress: number;
 }) {
-  const activeIndex = Math.max(0, sections.findIndex((s) => s.id === active));
+  const activeIndex = Math.max(0, sections.findIndex((s: Section) => s.id === active));
   return (
     <div className="relative">
       {/* SVG rail */}
