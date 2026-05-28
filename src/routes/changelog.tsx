@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useReveal } from "@/hooks/use-reveal";
-import { ArrowUpRight, Sparkles, Wrench, Zap } from "lucide-react";
+import { Sparkles, Wrench, Zap, ArrowUpRight } from "lucide-react";
 
 export const Route = createFileRoute("/changelog")({
   component: ChangelogPage,
@@ -17,115 +17,103 @@ export const Route = createFileRoute("/changelog")({
 
 type Kind = "new" | "fix" | "perf";
 
-const releases: {
-  version: string;
-  date: string;
-  tag: string;
-  headline: string;
-  summary: string;
-  items: { kind: Kind; text: string }[];
-}[] = [
+const releases = [
   {
     version: "0.1.0",
-    date: "May 13, 2026",
-    tag: "Initial preview",
-    headline: "Nori opens to its first preview wave.",
-    summary:
-      "The first closed Developer Preview. A lot of foundation work — structured blocks, a calm prompt, and an async-first runtime.",
+    date: "May 2026",
+    tag: "Initial Preview",
     items: [
-      { kind: "new", text: "Structured command execution blocks with per-block timing" },
-      { kind: "new", text: "Git-aware prompt: branch, dirty state, ahead/behind" },
-      { kind: "new", text: "Async-first runtime — long tasks never block the prompt" },
-      { kind: "new", text: "Repo-scoped navigation across sessions, blocks, and outputs" },
-      { kind: "perf", text: "Cold start measured at 18ms median on M2" },
-      { kind: "new", text: "Signed builds for macOS (Apple Silicon, Intel) and Linux x86_64" },
+      { kind: "new" as Kind, text: "Structured command execution with per-block timing and exit status" },
+      { kind: "new" as Kind, text: "Git-aware prompt — live branch, dirty state, ahead/behind indicators" },
+      { kind: "new" as Kind, text: "Interactive Git workspace panel — stage, unstage, diff, commit, branches" },
+      { kind: "new" as Kind, text: "Docker panel with compose detection and container lifecycle management" },
+      { kind: "new" as Kind, text: "File explorer with collapsible tree and per-file git status" },
+      { kind: "new" as Kind, text: "System monitor — live CPU and RAM metrics" },
+      { kind: "new" as Kind, text: "Slash commands (/git, /docker) with intelligent alias expansion" },
+      { kind: "new" as Kind, text: "5 built-in themes — Jade, Ocean, Dracula, Nord, Gruvbox" },
+      { kind: "new" as Kind, text: "Tauri-based GUI with native window management" },
+      { kind: "new" as Kind, text: "Nerd Font auto-installation on Windows" },
+      { kind: "perf" as Kind, text: "Async-first runtime — long tasks never block the prompt" },
+      { kind: "perf" as Kind, text: "Smart render loop — 30fps active, 10fps idle, near-zero CPU at rest" },
+      { kind: "perf" as Kind, text: "Native Rust binary — 6.4MB, 14MB RAM at rest" },
+      { kind: "new" as Kind, text: "Text selection and clipboard support via arboard" },
+      { kind: "new" as Kind, text: "Ctrl+Click URL opening in terminal output" },
+      { kind: "new" as Kind, text: "Persistent command history across sessions" },
     ],
   },
 ];
 
-const kindMeta: Record<Kind, { label: string; icon: React.ComponentType<{ className?: string }>; tone: string }> = {
-  new: { label: "New", icon: Sparkles, tone: "text-jade" },
-  fix: { label: "Fix", icon: Wrench, tone: "text-foreground/70" },
-  perf: { label: "Perf", icon: Zap, tone: "text-jade" },
+const kindConfig: Record<Kind, { label: string; icon: React.ComponentType<{ className?: string }>; color: string }> = {
+  new:  { label: "New",  icon: Sparkles, color: "text-emerald-400/70 bg-emerald-500/[0.06] border-emerald-500/[0.1]" },
+  fix:  { label: "Fix",  icon: Wrench,   color: "text-amber-400/70 bg-amber-500/[0.06] border-amber-500/[0.1]" },
+  perf: { label: "Perf", icon: Zap,      color: "text-blue-400/70 bg-blue-500/[0.06] border-blue-500/[0.1]" },
 };
 
 function ChangelogPage() {
   useReveal();
   return (
     <SiteLayout>
-      {/* Editorial header */}
-      <section className="relative pt-40 pb-16">
-        <div className="mx-auto max-w-6xl px-6 sm:px-8">
-          <p className="reveal text-[10.5px] font-mono uppercase tracking-[0.28em] text-muted-foreground flex items-center gap-2">
-            <span className="size-[5px] rounded-full bg-jade" />
-            Changelog
+      {/* Header */}
+      <section className="relative pt-36 sm:pt-44 pb-16">
+        <div className="mx-auto max-w-3xl px-5 sm:px-8">
+          <p className="reveal text-[10px] font-mono uppercase tracking-[0.3em] text-white/30 mb-4">
+            Release Notes
           </p>
-          <div className="reveal mt-6 flex items-end justify-between gap-8 flex-wrap">
-            <h1 className="text-5xl md:text-7xl font-medium tracking-[-0.045em] leading-[0.95] text-gradient-soft">
-              What's <span className="font-serif italic text-foreground/85">new.</span>
-            </h1>
-          </div>
-          <p className="reveal mt-6 text-muted-foreground max-w-xl text-[15px] leading-relaxed">
-            Bug fixes and patches install silently in the running terminal. Larger updates are listed here in chronological order.
+          <h1 className="reveal text-4xl sm:text-5xl md:text-6xl font-medium tracking-[-0.04em] leading-[0.95] text-gradient-soft">
+            Changelog
+          </h1>
+          <p className="reveal mt-5 text-white/40 max-w-md text-[15px] leading-relaxed">
+            What's shipped in each release. Bug fixes install silently — larger updates are listed here.
           </p>
         </div>
       </section>
 
       {/* Releases */}
-      <section className="mx-auto max-w-6xl px-6 sm:px-8 pb-32">
-        <div className="space-y-24">
-          {releases.map((r) => (
-            <article key={r.version} className="reveal grid grid-cols-12 gap-8 lg:gap-12">
-              {/* Left rail */}
-              <header className="col-span-12 lg:col-span-3">
-                <div className="lg:sticky lg:top-28">
-                  <div className="flex items-baseline gap-3 flex-wrap">
-                    <h2 className="font-mono text-2xl text-foreground tracking-tight">v{r.version}</h2>
-                    <span className="text-[10.5px] font-mono uppercase tracking-[0.2em] text-jade border border-jade/30 rounded-full px-2 py-0.5">
-                      {r.tag}
-                    </span>
-                  </div>
-                  <p className="mt-3 font-mono text-[11px] text-muted-foreground/70">{r.date}</p>
-                  <p className="mt-6 text-[13px] text-muted-foreground leading-relaxed max-w-xs">
-                    {r.summary}
-                  </p>
-                  <Link
-                    to="/download"
-                    className="mt-6 inline-flex items-center gap-1 text-[12px] text-muted-foreground hover:text-foreground"
-                  >
-                    Download <ArrowUpRight className="size-3" />
-                  </Link>
+      <section className="mx-auto max-w-3xl px-5 sm:px-8 pb-32">
+        <div className="space-y-16">
+          {releases.map((release) => (
+            <article key={release.version} className="reveal">
+              {/* Release header */}
+              <div className="flex items-center gap-4 mb-8">
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-[20px] font-medium text-white/90">v{release.version}</span>
+                  <span className="font-mono text-[9px] uppercase tracking-[0.15em] text-emerald-400/60 bg-emerald-500/[0.06] border border-emerald-500/[0.1] rounded-full px-2.5 py-0.5">
+                    {release.tag}
+                  </span>
                 </div>
-              </header>
+                <span className="flex-1 h-px bg-white/[0.04]" />
+                <span className="font-mono text-[11px] text-white/25">{release.date}</span>
+              </div>
 
-              {/* Right column — content */}
-              <div className="col-span-12 lg:col-span-9 border-l hairline pl-8 lg:pl-12">
-                <h3 className="text-2xl md:text-3xl font-medium tracking-[-0.03em] text-foreground/90 max-w-2xl">
-                  {r.headline}
-                </h3>
-                <ul className="mt-10 divide-y hairline">
-                  {r.items.map((it, i) => {
-                    const meta = kindMeta[it.kind];
-                    const Icon = meta.icon;
-                    return (
-                      <li key={i} className="flex items-start gap-5 py-4">
-                        <span className={`flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] ${meta.tone} w-16 shrink-0 pt-1`}>
-                          <Icon className="size-3" />
-                          {meta.label}
-                        </span>
-                        <span className="text-[14.5px] text-foreground/85 leading-relaxed">{it.text}</span>
-                      </li>
-                    );
-                  })}
-                </ul>
+              {/* Items */}
+              <div className="space-y-2">
+                {release.items.map((item, i) => {
+                  const config = kindConfig[item.kind];
+                  const Icon = config.icon;
+                  return (
+                    <div key={i} className="flex items-start gap-3 py-2.5 group">
+                      <span className={`inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.15em] border rounded-full px-2 py-0.5 shrink-0 mt-0.5 ${config.color}`}>
+                        <Icon className="size-2.5" />
+                        {config.label}
+                      </span>
+                      <span className="text-[14px] text-white/60 leading-relaxed group-hover:text-white/80 transition-colors">
+                        {item.text}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </article>
           ))}
         </div>
 
-        <p className="mt-24 text-center font-mono text-[11px] text-muted-foreground/60">
-          More release notes land as the preview wave expands.
-        </p>
+        {/* Footer */}
+        <div className="mt-20 pt-8 border-t border-white/[0.04] flex items-center justify-between">
+          <p className="font-mono text-[11px] text-white/20">More releases as the preview expands.</p>
+          <Link to="/download" className="text-[12px] text-white/40 hover:text-white/70 transition-colors flex items-center gap-1">
+            Download latest <ArrowUpRight className="size-3" />
+          </Link>
+        </div>
       </section>
     </SiteLayout>
   );

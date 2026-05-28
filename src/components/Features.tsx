@@ -6,14 +6,14 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
 
 const features = [
-  { icon: GitBranch, title: "Git-aware workflows",   desc: "Live branch, diff, and status surfaced in every prompt and block.", colSpan: "col-span-1 md:col-span-3 min-h-[220px]" },
-  { icon: Layers,    title: "Structured execution",  desc: "Each command is a discrete, navigable unit with output, timing, and exit state.", colSpan: "col-span-1 md:col-span-3 min-h-[220px]" },
-  { icon: Zap,       title: "Async execution",       desc: "Run long tasks in the background. Keep typing. Nothing blocks you.", colSpan: "col-span-1 md:col-span-4 min-h-[200px]" },
-  { icon: Timer,     title: "Fast startup",          desc: "Cold start under 20ms. Ready before your fingers settle.", colSpan: "col-span-1 md:col-span-2 min-h-[200px]" },
-  { icon: Cpu,       title: "Tiny footprint",        desc: "Native Rust core stays under 15MB at rest, even with sessions open.", colSpan: "col-span-1 md:col-span-2 min-h-[200px]" },
-  { icon: FolderTree,title: "Repo awareness",        desc: "Project context loads with the working directory — env, scripts, history.", colSpan: "col-span-1 md:col-span-4 min-h-[200px]" },
-  { icon: Compass,   title: "Smart navigation",      desc: "Jump between blocks, files, and processes with a keystroke.", colSpan: "col-span-1 md:col-span-3 min-h-[220px]" },
-  { icon: Sparkles,  title: "Modern terminal UX",    desc: "Typography, spacing, and motion engineered like a product, not a relic.", colSpan: "col-span-1 md:col-span-3 min-h-[220px]" },
+  { icon: GitBranch, title: "Git-aware workflows",   desc: "Live branch, diff, and status surfaced in every prompt and block." },
+  { icon: Layers,    title: "Structured execution",  desc: "Each command is a discrete, navigable unit with output, timing, and exit state." },
+  { icon: Zap,       title: "Async execution",       desc: "Run long tasks in the background. Keep typing. Nothing blocks you." },
+  { icon: Timer,     title: "Fast startup",          desc: "Blazing fast launch. Ready before your fingers settle." },
+  { icon: Cpu,       title: "Tiny footprint",        desc: "Native Rust core stays under 15MB at rest, even with sessions open." },
+  { icon: FolderTree,title: "Repo awareness",        desc: "Project context loads with the working directory — env, scripts, history." },
+  { icon: Compass,   title: "Smart navigation",      desc: "Jump between blocks, files, and processes with a keystroke." },
+  { icon: Sparkles,  title: "Modern terminal UX",    desc: "Typography, spacing, and motion engineered like a product, not a relic." },
 ];
 
 export function Features() {
@@ -23,31 +23,41 @@ export function Features() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     const ctx = gsap.context(() => {
-      // stagger each card in
       const cards = gridRef.current?.querySelectorAll(".feat-card");
-      if (cards) {
-        gsap.fromTo(cards,
-          { opacity: 0, y: 28, scale: 0.97 },
-          {
-            opacity: 1, y: 0, scale: 1,
-            duration: 0.65, stagger: 0.07, ease: "expo.out",
-            scrollTrigger: { trigger: gridRef.current, start: "top 82%", once: true },
-          }
-        );
-      }
+      if (!cards) return;
+
+      // Staggered entrance with slight rotation for depth
+      gsap.fromTo(cards,
+        { opacity: 0, y: 40, rotateX: 8, scale: 0.95 },
+        {
+          opacity: 1, y: 0, rotateX: 0, scale: 1,
+          duration: 0.8,
+          stagger: { amount: 0.6, from: "start" },
+          ease: "expo.out",
+          scrollTrigger: { trigger: gridRef.current, start: "top 82%", once: true },
+        }
+      );
+
+      // Subtle parallax on the entire grid
+      gsap.to(gridRef.current, {
+        y: -20,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 2,
+        },
+      });
     }, sectionRef);
     return () => ctx.revert();
   }, []);
 
   return (
-    <section ref={sectionRef} id="features" className="relative py-28 border-t border-white/5 bg-[#040605]">
-      {/* Subtle section glow */}
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent, color-mix(in oklab, var(--jade) 30%, transparent), transparent)" }} />
-
+    <section ref={sectionRef} id="features" className="relative py-28 sm:py-36 border-t border-white/[0.04]">
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
-        <div className="max-w-2xl select-none">
-          <p className="reveal text-[11px] font-mono uppercase tracking-[0.22em] text-jade/80">Features</p>
+        <div className="max-w-2xl select-none md:pl-2">
+          <p className="reveal text-[11px] font-mono uppercase tracking-[0.22em] text-white/50">Features</p>
           <h2 className="reveal mt-4 text-3xl md:text-5xl font-semibold tracking-[-0.035em] text-balance text-gradient-soft leading-[1.05]">
             Built around the way<br />you actually work.
           </h2>
@@ -57,10 +67,16 @@ export function Features() {
         </div>
 
         <div ref={gridRef}
-          className="mt-14 grid grid-cols-1 md:grid-cols-6 gap-5 bg-transparent">
-          {features.map((f, i) => (
-            <FeatureCard key={f.title} f={f} className={f.colSpan} />
-          ))}
+          className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-6 bg-transparent"
+          style={{ perspective: "1200px" }}>
+          <FeatureCard f={features[0]} className="md:col-span-2 min-h-[200px]" />
+          <FeatureCard f={features[1]} className="md:col-span-1 min-h-[200px]" />
+          <FeatureCard f={features[2]} className="md:col-span-1 min-h-[200px]" />
+          <FeatureCard f={features[3]} className="md:col-span-1 min-h-[200px]" />
+          <FeatureCard f={features[4]} className="md:col-span-1 min-h-[200px]" />
+          <FeatureCard f={features[5]} className="md:col-span-1 min-h-[200px]" />
+          <FeatureCard f={features[6]} className="md:col-span-2 min-h-[200px]" />
+          <FeatureCard f={features[7]} className="md:col-span-2 md:col-start-1 min-h-[180px]" />
         </div>
       </div>
     </section>
@@ -72,39 +88,57 @@ function FeatureCard({ f, className }: { f: typeof features[0]; className: strin
   const glowRef = useRef<HTMLDivElement>(null);
 
   const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = cardRef.current!.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    gsap.to(glowRef.current, {
-      background: `radial-gradient(240px circle at ${x}% ${y}%, rgba(110, 231, 183, 0.08), transparent 70%)`,
+    const card = cardRef.current!;
+    const glow = glowRef.current!;
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+
+    // 3D tilt effect
+    const rotateX = (y - 0.5) * -8;
+    const rotateY = (x - 0.5) * 8;
+
+    gsap.to(card, {
+      rotateX,
+      rotateY,
+      duration: 0.4,
+      ease: "power2.out",
+      transformPerspective: 800,
+    });
+
+    // Glow follows cursor
+    gsap.to(glow, {
+      background: `radial-gradient(300px circle at ${x * 100}% ${y * 100}%, rgba(255, 255, 255, 0.06), transparent 60%)`,
       duration: 0.3,
     });
   };
+
   const onMouseLeave = () => {
+    gsap.to(cardRef.current, {
+      rotateX: 0,
+      rotateY: 0,
+      duration: 0.6,
+      ease: "elastic.out(1, 0.5)",
+    });
     gsap.to(glowRef.current, { background: "none", duration: 0.5 });
   };
 
   return (
-    <div ref={cardRef}
+    <article ref={cardRef}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
-      className={`feat-card group relative p-7 rounded-2xl border border-white/5 bg-white/[0.01] hover:bg-white/[0.02] hover:border-jade/20 hover:shadow-[0_15px_35px_rgba(0,0,0,0.5),0_0_20px_rgba(110,231,183,0.015)] transition-all duration-500 flex flex-col justify-between overflow-hidden cursor-default ${className}`}
-      style={{ opacity: 0 }}>
+      className={`feat-card group relative p-7 rounded-2xl border border-white/[0.05] bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/[0.12] hover:shadow-[0_15px_35px_rgba(0,0,0,0.5)] transition-[background,border-color,box-shadow] duration-500 flex flex-col justify-between overflow-hidden cursor-default will-change-transform ${className}`}
+      style={{ opacity: 0, transformStyle: "preserve-3d" }}>
       {/* Glow layer */}
-      <div ref={glowRef} aria-hidden className="absolute inset-0 pointer-events-none transition-all duration-300" />
-      
-      {/* Subtle top border highlight */}
-      <div aria-hidden className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/[0.03] to-transparent" />
-      
-      <div className="relative flex flex-col h-full justify-between">
-        <div className="size-9 rounded-xl border border-white/5 bg-white/[0.02] grid place-items-center mb-6 group-hover:border-jade/30 group-hover:bg-jade/5 transition-all duration-300 shadow-[0_1px_3px_rgba(0,0,0,0.3)]">
-          <f.icon className="size-4.5 text-foreground/50 group-hover:text-jade group-hover:scale-110 transition-all duration-300" />
-        </div>
-        <div>
-          <h3 className="text-[14.5px] font-semibold tracking-tight text-foreground/90 group-hover:text-foreground transition-colors duration-300">{f.title}</h3>
-          <p className="mt-2 text-[13px] text-muted-foreground leading-relaxed">{f.desc}</p>
-        </div>
+      <div ref={glowRef} aria-hidden className="absolute inset-0 pointer-events-none" />
+
+      <div className="relative size-9 rounded-xl border border-white/[0.06] bg-white/[0.02] grid place-items-center mb-6 group-hover:border-white/[0.12] group-hover:bg-white/[0.04] transition-all duration-300 shadow-[0_1px_3px_rgba(0,0,0,0.3)]">
+        <f.icon className="size-4.5 text-white/40 group-hover:text-white/70 group-hover:scale-110 transition-all duration-300" />
       </div>
-    </div>
+      <div className="relative">
+        <h3 className="text-[14.5px] font-semibold tracking-tight text-foreground/90 group-hover:text-foreground transition-colors duration-300">{f.title}</h3>
+        <p className="mt-2 text-[13px] text-muted-foreground leading-relaxed">{f.desc}</p>
+      </div>
+    </article>
   );
 }

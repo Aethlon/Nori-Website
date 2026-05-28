@@ -92,7 +92,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "keywords", content: "terminal, developer terminal, rust terminal, modern terminal, git terminal, developer tools, nori, command line, CLI" },
       { name: "author", content: "Nori" },
       { name: "robots", content: "index, follow" },
-      { name: "theme-color", content: "#040605" },
+      { name: "theme-color", content: "#0A0A0A" },
       // Open Graph
       { property: "og:type", content: "website" },
       { property: "og:url", content: SITE_URL },

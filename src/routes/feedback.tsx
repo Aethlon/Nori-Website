@@ -40,7 +40,7 @@ function FeedbackPage() {
           {/* Eyebrow */}
           <div className="reveal flex items-center justify-between gap-4 mb-10">
             <p className="text-[10.5px] font-mono uppercase tracking-[0.28em] text-muted-foreground flex items-center gap-2">
-              <span className="size-[5px] rounded-full bg-jade" />
+              <span className="size-[5px] rounded-full bg-white/80" />
               Feedback · Preview wave 01
             </p>
             <p className="hidden sm:block text-[11px] font-mono text-muted-foreground/60">
@@ -90,9 +90,9 @@ function FeedbackPage() {
             <div className="col-span-12 lg:col-span-8">
               {submitted ? (
                 <div className="reveal h-full min-h-[420px] flex flex-col items-start justify-center gap-6 border-t hairline pt-12">
-                  <div className="size-14 rounded-full border-2 border-jade/40 grid place-items-center relative">
-                    <span aria-hidden className="absolute inset-0 rounded-full bg-jade/10 animate-ping" />
-                    <svg viewBox="0 0 24 24" className="size-7 text-jade" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <div className="size-14 rounded-full border-2 border-white/20 grid place-items-center relative">
+                    <span aria-hidden className="absolute inset-0 rounded-full bg-white/[0.06]" />
+                    <svg viewBox="0 0 24 24" className="size-7 text-white/80" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path
                         d="M5 12.5L10 17.5L19 7.5"
                         style={{
@@ -151,7 +151,7 @@ function FeedbackPage() {
                               onClick={() => setForm({ ...form, topic: t.id })}
                               className={`px-3 py-1 rounded-full text-[12px] border transition-all ${
                                 active
-                                  ? "border-jade/40 text-foreground bg-jade/5"
+                                  ? "border-white/15 text-foreground bg-white/[0.05]"
                                   : "hairline text-muted-foreground hover:text-foreground"
                               }`}
                             >
@@ -187,10 +187,10 @@ function FeedbackPage() {
                     </p>
                     <button
                       type="submit"
-                      className="group inline-flex items-center gap-3 text-3xl md:text-4xl font-medium tracking-[-0.03em] text-foreground hover:text-jade transition-colors"
+                      className="group inline-flex items-center gap-3 text-3xl md:text-4xl font-medium tracking-[-0.03em] text-foreground hover:text-white/80 transition-colors"
                     >
                       Send
-                      <span className="grid place-items-center size-12 rounded-full border hairline group-hover:border-jade/40 group-hover:bg-jade/5 transition-all">
+                      <span className="grid place-items-center size-12 rounded-full border hairline group-hover:border-white/15 group-hover:bg-white/[0.05] transition-all">
                         <ArrowUpRight className="size-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                       </span>
                     </button>
@@ -228,13 +228,13 @@ function BareInput({
       <span
         aria-hidden
         className={`absolute left-0 right-0 bottom-0 h-px origin-left transition-transform duration-500 ${
-          focused ? "bg-jade scale-x-100" : "bg-foreground/10 scale-x-100"
+          focused ? "bg-white/80 scale-x-100" : "bg-foreground/10 scale-x-100"
         }`}
-        style={{ boxShadow: focused ? "0 0 8px var(--jade)" : undefined }}
+        style={{ boxShadow: focused ? "0 0 8px rgba(255,255,255,0.3)" : undefined }}
       />
       <label className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground/70 mb-3">
         {label}
-        {focused && <span className="size-[5px] rounded-full bg-jade animate-pulse" />}
+        {focused && <span className="size-[5px] rounded-full bg-white/80" />}
       </label>
       <input
         type={type}
@@ -243,7 +243,7 @@ function BareInput({
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         placeholder={placeholder}
-        className="w-full bg-transparent outline-none text-[16px] text-foreground placeholder:text-muted-foreground/40 caret-jade"
+        className="w-full bg-transparent outline-none text-[16px] text-foreground placeholder:text-muted-foreground/40 caret-white"
       />
     </div>
   );

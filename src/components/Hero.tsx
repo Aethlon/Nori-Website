@@ -1,19 +1,25 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Terminal } from "./Terminal";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
-import canyonBg from "@/assets/canyon_bg.png";
-import { NoiseLayer, ParticleField, GridOverlay, Vignette, AmbientFog, CursorAura, GlowOrbs } from "./atmosphere";
+import { NoiseLayer, ParticleField, GridOverlay, Vignette, AmbientFog, GlowOrbs, SilkBackground } from "./atmosphere";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(SplitText);
 }
 
+/** Detect touch device — disables mouse-tracking parallax on mobile */
+function isTouchDevice(): boolean {
+  if (typeof window === "undefined") return false;
+  return "ontouchstart" in window || navigator.maxTouchPoints > 0;
+}
+
 /* ─── Stat chips ──────────────────────────────────────────────────────────── */
 function StatChips() {
   const chips = [
-    { val: "18ms",  label: "cold start" },
+    { val: "6.4MB", label: "binary" },
     { val: "14MB",  label: "at rest" },
     { val: "100%",  label: "native rust" },
     { val: "0.4ms", label: "block render" },
@@ -22,9 +28,9 @@ function StatChips() {
     <div className="flex flex-wrap items-center justify-start gap-2 mt-7">
       {chips.map((c, i) => (
         <div key={c.val}
-          className="reveal inline-flex items-center gap-2.5 rounded-full border border-white/5 bg-white/[0.02] px-3.5 py-1.5 hover:border-jade/30 hover:bg-jade/[0.04] transition-all duration-300 cursor-default group shadow-[0_1px_3px_rgba(0,0,0,0.3)]"
+          className="reveal inline-flex items-center gap-2.5 rounded-full border border-white/6 bg-white/[0.02] px-3.5 py-1.5 hover:border-white/12 hover:bg-white/[0.04] transition-all duration-300 cursor-default group shadow-[0_1px_3px_rgba(0,0,0,0.3)]"
           style={{ animationDelay: `${i * 0.08}s` }}>
-          <span className="font-mono text-[12px] font-normal text-jade">{c.val}</span>
+          <span className="font-mono text-[12px] font-normal text-white/80">{c.val}</span>
           <span className="font-mono text-[9px] text-muted-foreground/50 uppercase tracking-[0.18em]">{c.label}</span>
         </div>
       ))}
@@ -41,12 +47,29 @@ export function Hero() {
   const ctaRef      = useRef<HTMLDivElement>(null);
   const platformRef = useRef<HTMLDivElement>(null);
   const termRef     = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
+  const [isTouch] = useState(() => isTouchDevice());
 
   // Entrance timeline
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    // When reduced motion is preferred, set elements to final state immediately
+    if (reducedMotion) {
+      const elements = [pillRef.current, subRef.current, ctaRef.current, platformRef.current, termRef.current];
+      elements.forEach((el) => {
+        if (el) gsap.set(el, { opacity: 1, y: 0, scale: 1, rotateX: 0, filter: "blur(0px)" });
+      });
+      if (h1Ref.current) {
+        gsap.set(h1Ref.current, { opacity: 1, y: 0, rotateX: 0, filter: "blur(0px)" });
+      }
+      return;
+    }
+
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
+      // Reduce stagger on mobile/touch for smoother performance
+      const mobileStagger = isTouch ? 0.018 : 0.012;
 
       // Pill
       tl.fromTo(pillRef.current,
@@ -55,14 +78,23 @@ export function Hero() {
         0.1
       );
 
-      // Headline split
+      // Headline split — simpler reveal on mobile (no rotateX/blur)
       if (h1Ref.current) {
         const split = new SplitText(h1Ref.current, { type: "chars,words" });
-        tl.fromTo(split.chars,
-          { opacity: 0, y: 40, rotateX: -50, filter: "blur(4px)" },
-          { opacity: 1, y: 0, rotateX: 0, filter: "blur(0px)", duration: 0.9, stagger: 0.012, transformOrigin: "0% 50% -30px" },
-          0.2
-        );
+        if (isTouch) {
+          // Simpler fade/slide on mobile — no 3D rotation or blur for performance
+          tl.fromTo(split.chars,
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.7, stagger: mobileStagger },
+            0.2
+          );
+        } else {
+          tl.fromTo(split.chars,
+            { opacity: 0, y: 40, rotateX: -50, filter: "blur(4px)" },
+            { opacity: 1, y: 0, rotateX: 0, filter: "blur(0px)", duration: 0.9, stagger: mobileStagger, transformOrigin: "0% 50% -30px" },
+            0.2
+          );
+        }
       }
 
       // Sub + CTA + platforms
@@ -81,10 +113,11 @@ export function Hero() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [reducedMotion]);
 
-  // Terminal parallax on mouse
+  // Terminal parallax on mouse — disabled on touch devices and when reduced motion is preferred
   useEffect(() => {
+    if (reducedMotion || isTouch) return;
     const el = termRef.current;
     if (!el) return;
     const onMove = (e: MouseEvent) => {
@@ -93,8 +126,8 @@ export function Hero() {
       const dx = (e.clientX - cx) / cx;
       const dy = (e.clientY - cy) / cy;
       gsap.to(el, {
-        rotateY: dx * 6,
-        rotateX: -dy * 4,
+        rotateY: dx * 3,
+        rotateX: -dy * 2,
         transformPerspective: 1400,
         duration: 1.4,
         ease: "power2.out",
@@ -102,123 +135,75 @@ export function Hero() {
     };
     window.addEventListener("mousemove", onMove);
     return () => window.removeEventListener("mousemove", onMove);
-  }, []);
-
-  // Ambient floating (breathing) motion
-  useEffect(() => {
-    const el = termRef.current;
-    if (!el) return;
-    gsap.to(el, {
-      y: -12,
-      duration: 4,
-      ease: "sine.inOut",
-      yoyo: true,
-      repeat: -1,
-      delay: 1.2, // Start after entrance
-    });
-  }, []);
+  }, [reducedMotion, isTouch]);
 
   return (
-    <section ref={sectionRef} className="relative pt-24 pb-16 sm:pt-32 sm:pb-36 overflow-hidden min-h-screen flex items-center bg-[#040605]">
-      {/* Cinematic backgrounds */}
+    <section ref={sectionRef} className="relative pt-32 pb-24 sm:pt-40 sm:pb-36 overflow-hidden min-h-screen flex flex-col items-center justify-center">
+      {/* Silk flowing background */}
+      <SilkBackground />
+      
+      {/* Overlay to darken center for text readability */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 z-[1]"
+        style={{ background: "radial-gradient(ellipse 70% 60% at 50% 40%, rgba(0,0,0,0.6), transparent 80%)" }} />
+      
+      {/* Subtle noise texture on top */}
       <NoiseLayer />
-      <GridOverlay />
-      <ParticleField />
-      <GlowOrbs />
       <Vignette />
-      <CursorAura />
-      <AmbientFog />
 
-      {/* Canyon background image layer */}
-      <div 
-        aria-hidden 
-        className="pointer-events-none absolute inset-0 z-0 select-none opacity-[0.22] mix-blend-lighten"
-        style={{
-          backgroundImage: `url(${canyonBg})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center bottom',
-          maskImage: 'linear-gradient(to bottom, #000 30%, transparent 95%)',
-          WebkitMaskImage: 'linear-gradient(to bottom, #000 30%, transparent 95%)',
-        }}
-      />
-
-      <div className="relative z-10 mx-auto max-w-7xl px-5 sm:px-8 w-full grid lg:grid-cols-[1.15fr_0.85fr] gap-10 lg:gap-16 items-center">
+      <div className="relative z-10 mx-auto max-w-5xl px-5 sm:px-8 w-full flex flex-col items-center text-center select-none gap-0 portrait:gap-6">
         
-        {/* Left Column (Left-heavy contents) */}
-        <div className="text-left flex flex-col items-start select-none">
-          
-          {/* Status pill */}
-          <div ref={pillRef} style={{ opacity: 0 }}
-            className="inline-flex items-center gap-2.5 rounded-full border border-white/5 bg-white/[0.02] backdrop-blur px-3.5 py-1.5 text-[11px] font-mono text-muted-foreground mb-6 shadow-[0_1px_3px_rgba(0,0,0,0.3)]">
-            <span className="relative flex size-1.5">
-              <span className="absolute inset-0 rounded-full bg-jade animate-ping opacity-60" />
-              <span className="relative rounded-full bg-jade size-1.5 shadow-[0_0_10px_var(--jade)]" />
-            </span>
-            v0.1 · Developer preview
-            <span className="text-muted-foreground/30">·</span>
-            <span className="text-muted-foreground/50">closed wave</span>
-          </div>
+        {/* Status pill */}
+        <div ref={pillRef} style={{ opacity: 0 }}
+          className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-[#0A0A0A]/80 px-4 py-1.5 text-[11px] font-mono text-white/90 mb-7">
+          <span className="size-2 rounded-full bg-white/60" />
+          v0.1 Developer preview
+        </div>
 
-          {/* Headline */}
-          <h1 ref={h1Ref} style={{ opacity: 0, perspective: "1000px" }}
-            className="text-[2.75rem] xs:text-[3.25rem] sm:text-6xl md:text-7xl lg:text-[4.5rem] xl:text-[5rem] font-light tracking-[-0.035em] leading-[1.0] text-balance text-foreground/95">
-            Terminal,<br/>
-            <span className="text-gradient-soft font-serif italic">re-designed.</span>
-          </h1>
+        {/* Headline — minimum 32px on mobile with appropriate line-height */}
+        <h1 ref={h1Ref} style={{ opacity: 0, perspective: "1000px" }}
+          className="text-[2rem] xs:text-[3.5rem] sm:text-6xl md:text-7xl lg:text-[5rem] xl:text-[6rem] font-medium tracking-[-0.04em] leading-[1.1] sm:leading-[1.0] text-balance bg-gradient-to-b from-white to-white/60 bg-clip-text text-transparent mb-6">
+          A terminal,<br/>
+          <span className="font-semibold">engineered.</span>
+        </h1>
 
-          {/* Sub */}
-          <p ref={subRef} style={{ opacity: 0 }}
-            className="mt-6 max-w-[420px] text-[15px] sm:text-[16px] text-muted-foreground leading-relaxed text-balance font-normal">
-            A calmer surface for serious work. Async-first, and deeply integrated with your repos.
-          </p>
+        {/* Sub */}
+        <p ref={subRef} style={{ opacity: 0 }}
+          className="max-w-xl text-[16px] sm:text-[18px] text-muted-foreground/80 leading-relaxed text-balance font-normal mb-8">
+          A calmer surface for serious work. Async-first, and deeply integrated with your repos.
+        </p>
 
-          {/* CTA */}
-          <div ref={ctaRef} style={{ opacity: 0 }}
-            className="mt-8 flex flex-wrap items-center gap-3 sm:gap-4 w-full">
-            <Link to="/download"
-              className="group inline-flex items-center justify-center gap-3 rounded-2xl bg-white text-black px-7 py-3.5 sm:px-8 text-[14px] sm:text-[14.5px] font-normal transition-all duration-300 hover:bg-neutral-200 hover:-translate-y-0.5 min-h-[48px]">
-              Download Nori
-            </Link>
-            <Link to="/docs"
-              className="group inline-flex items-center gap-2 rounded-2xl bg-transparent hover:bg-white/[0.03] px-5 py-3.5 sm:px-6 text-[14px] sm:text-[14.5px] text-foreground/80 transition-all duration-300 hover:text-foreground font-normal min-h-[48px]">
-              Read docs
-              <svg viewBox="0 0 12 12" className="size-3.5 text-muted-foreground transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M2.5 6h7M6 2.5L9.5 6 6 9.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </Link>
-          </div>
+        {/* CTA */}
+        <div ref={ctaRef} style={{ opacity: 0 }}
+          className="flex flex-wrap items-center justify-center gap-4 w-full mb-16">
+          <Link to="/download"
+            className="group inline-flex items-center justify-center gap-3 rounded-2xl bg-white text-black px-7 py-3.5 sm:px-8 text-[14px] sm:text-[14.5px] font-normal transition-all duration-300 hover:bg-neutral-200 hover:-translate-y-0.5 min-h-[48px]">
+            Download Nori
+            <svg viewBox="0 0 12 12" className="size-3.5 text-black transition-transform group-hover:translate-y-0.5" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M6 2v8M2.5 6.5L6 10l3.5-3.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </Link>
+          <Link to="/docs"
+            className="group inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-transparent hover:bg-white/[0.03] px-5 py-3.5 sm:px-6 text-[14px] sm:text-[14.5px] text-foreground/80 transition-all duration-300 hover:text-foreground font-normal min-h-[48px]">
+            Read docs
+            <svg viewBox="0 0 12 12" className="size-3.5 text-muted-foreground transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M2.5 6h7M6 2.5L9.5 6 6 9.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </Link>
+        </div>
 
-          {/* Stat chips */}
-          <StatChips />
+        {/* Centered Terminal Mockup */}
+        <div ref={termRef} style={{ opacity: 0 }} className="relative z-10 w-full max-w-3xl mx-auto mb-14">
+          <Terminal size="lg" variant="flat" branch="main" path="~/nori/core" />
+        </div>
 
-          {/* Platform badges */}
-          <div ref={platformRef} style={{ opacity: 0 }}
-            className="mt-8 flex flex-wrap items-center gap-5 font-mono text-[10.5px] text-muted-foreground/60 uppercase tracking-[0.2em]">
+        {/* Platform badges */}
+        <div ref={platformRef} style={{ opacity: 0 }}
+          className="flex flex-col items-center gap-3">
+          <span className="font-mono text-[9px] text-muted-foreground uppercase tracking-[0.25em]">Available on</span>
+          <div className="flex flex-wrap items-center justify-center gap-7 font-mono text-[10.5px] text-muted-foreground tracking-[0.1em]">
+            <PlatformGlyph label="macOS" icon={<AppleIcon />} />
             <PlatformGlyph label="Windows" icon={<WindowsIcon />} />
-            <Divider />
-            <PlatformGlyph label="macOS · soon" muted icon={<AppleIcon />} />
-            <Divider />
-            <PlatformGlyph label="Linux · soon" muted icon={<LinuxIcon />} />
-          </div>
-        </div>
-
-        {/* Right Column — hide on small screens to avoid layout overflow */}
-        <div ref={termRef} style={{ opacity: 0 }} className="relative w-full max-w-2xl mx-auto lg:mx-0 hidden lg:block">
-          <Terminal size="lg" branch="main" path="~/repos/nori" />
-        </div>
-        {/* Mobile-only compact preview bar */}
-        <div className="lg:hidden mt-2 rounded-2xl border border-white/5 bg-white/[0.02] overflow-hidden">
-          <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/5">
-            <span className="size-2.5 rounded-full bg-red-500/60" />
-            <span className="size-2.5 rounded-full bg-yellow-500/60" />
-            <span className="size-2.5 rounded-full bg-jade/60" />
-            <span className="ml-2 font-mono text-[10px] text-muted-foreground/60">nori — ~/repos/nori</span>
-          </div>
-          <div className="px-4 py-3 font-mono text-[12px] text-jade/90 leading-[1.8]">
-            <p><span className="text-muted-foreground/50">~/repos/nori</span> <span className="text-foreground/60">git:(main)</span></p>
-            <p><span className="text-jade">✔</span> cold start: 18ms</p>
-            <p><span className="text-jade">✔</span> memory: 14MB at rest</p>
-            <p><span className="text-jade">✔</span> 100% native rust</p>
+            <PlatformGlyph label="Linux" icon={<LinuxIcon />} />
           </div>
         </div>
 

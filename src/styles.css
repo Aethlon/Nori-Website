@@ -28,7 +28,6 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-jade: var(--jade);
   --color-surface: var(--surface);
   --color-surface-elevated: var(--surface-elevated);
   --color-hairline: var(--hairline);
@@ -41,41 +40,37 @@
 :root {
   --radius: 0.625rem;
 
-  /* Nori Brand Palette */
-  --background: #040605;
-  --foreground: #F5F5F2;
+  /* Core palette — ash-black + white */
+  --background: #0A0A0A;
+  --foreground: #F5F5F5;
 
-  --surface: rgba(14, 18, 16, 0.72);
-  --surface-elevated: rgba(12, 16, 14, 0.84);
-  --hairline: rgba(255, 255, 255, 0.05);
+  --surface: rgba(255, 255, 255, 0.02);
+  --surface-elevated: rgba(255, 255, 255, 0.04);
+  --hairline: rgba(255, 255, 255, 0.06);
 
-  --card: rgba(14, 18, 16, 0.72);
-  --card-foreground: #F5F5F2;
-  --popover: rgba(12, 16, 14, 0.84);
-  --popover-foreground: #F5F5F2;
+  --card: rgba(255, 255, 255, 0.03);
+  --card-foreground: #F5F5F5;
+  --popover: rgba(255, 255, 255, 0.04);
+  --popover-foreground: #F5F5F5;
 
-  /* Accent Colors */
-  --jade: #6EE7B7;
-  --jade-dim: #52B788;
-  --teal-accent: #2DD4BF;
-  --mint-accent: #7EF0C5;
+  --primary: #FFFFFF;
+  --primary-foreground: #0A0A0A;
 
-  --primary: #F5F5F2;
-  --primary-foreground: #040605;
+  --secondary: rgba(255, 255, 255, 0.03);
+  --secondary-foreground: rgba(255, 255, 255, 0.6);
+  --muted: rgba(255, 255, 255, 0.04);
+  --muted-foreground: rgba(255, 255, 255, 0.55);
 
-  --secondary: rgba(255, 255, 255, 0.02);
-  --secondary-foreground: #B7C0BA;
-  --muted: rgba(12, 16, 14, 0.84);
-  --muted-foreground: #B7C0BA;
-  --accent: #6EE7B7;
-  --accent-foreground: #040605;
+  /* Accent — neutral white (replaces jade) */
+  --accent: rgba(255, 255, 255, 0.9);
+  --accent-foreground: #0A0A0A;
+
   --destructive: oklch(0.65 0.18 25);
-  --destructive-foreground: #F5F5F2;
-  
-  --border: rgba(255, 255, 255, 0.05);
-  --border-glow: rgba(82, 183, 136, 0.12);
-  --input: rgba(255, 255, 255, 0.05);
-  --ring: #6EE7B7;
+  --destructive-foreground: #F5F5F5;
+
+  --border: rgba(255, 255, 255, 0.06);
+  --input: rgba(255, 255, 255, 0.06);
+  --ring: rgba(255, 255, 255, 0.3);
 }
 
 .dark { color-scheme: dark; }
@@ -94,6 +89,11 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
+  /* Global selection highlight — neutral white at 15% opacity */
+  ::selection {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: var(--foreground);
+  }
 }
 
 @layer utilities {
@@ -102,6 +102,103 @@
   .text-balance { text-wrap: balance; }
   .hairline { border-color: var(--hairline); }
   .ring-hairline { box-shadow: inset 0 0 0 1px var(--hairline); }
+
+  /* ─── Typography Scale ─── */
+
+  /* Display — hero headlines */
+  .type-display {
+    font-size: clamp(2rem, 5vw + 1rem, 6rem);
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    font-weight: 500;
+  }
+
+  /* Heading — section titles */
+  .type-heading {
+    font-size: clamp(2rem, 3vw + 1rem, 3.75rem);
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+    font-weight: 500;
+  }
+
+  /* Subheading — card titles */
+  .type-subheading {
+    font-size: clamp(1.25rem, 1.5vw + 0.5rem, 1.5rem);
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    font-weight: 500;
+  }
+
+  /* Body — paragraphs, max-width for readability (~65 chars) */
+  .type-body {
+    font-size: clamp(0.9375rem, 0.5vw + 0.875rem, 1rem);
+    letter-spacing: 0;
+    line-height: 1.7;
+    font-weight: 400;
+    max-width: 32rem;
+  }
+
+  /* Caption — monospace labels, metadata, version tags */
+  .type-caption {
+    font-family: var(--font-mono);
+    font-size: clamp(9px, 0.25vw + 8px, 11px);
+    letter-spacing: 0.18em;
+    line-height: 1.4;
+    font-weight: 400;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  /* Wide-tracked monospace label variant (eyebrow text) */
+  .type-label {
+    font-family: var(--font-mono);
+    font-size: clamp(9px, 0.25vw + 8px, 10.5px);
+    letter-spacing: 0.28em;
+    line-height: 1.4;
+    font-weight: 400;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  /* Legacy heading utilities (kept for backward compat) */
+  .heading-1 {
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    font-weight: 500;
+  }
+  .heading-2 {
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+    font-weight: 500;
+  }
+  .heading-3 {
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    font-weight: 500;
+  }
+  .body-text {
+    line-height: 1.7;
+    font-weight: 400;
+  }
+
+  /* ─── Section Spacing ─── */
+
+  /* Standard section vertical padding (min ~112px / ~144px on sm+) */
+  .section-padding {
+    padding-top: 7rem;
+    padding-bottom: 7rem;
+  }
+  @media (min-width: 640px) {
+    .section-padding {
+      padding-top: 9rem;
+      padding-bottom: 9rem;
+    }
+  }
+
+  /* Body text max-width constraint for readability */
+  .prose-width {
+    max-width: 32rem;
+  }
 
   /* Header fade — merges nav with grid backdrop */
   .nav-fade {
@@ -117,8 +214,8 @@
   /* Consistent grid backdrop used site-wide */
   .bg-grid {
     background-image:
-      linear-gradient(to right, oklch(1 0 0 / 0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, oklch(1 0 0 / 0.05) 1px, transparent 1px);
+      linear-gradient(to right, oklch(1 0 0 / 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(1 0 0 / 0.04) 1px, transparent 1px);
     background-size: 56px 56px;
     background-position: -1px -1px;
   }
@@ -133,11 +230,6 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-  }
-
-  .glow-jade-soft {
-    box-shadow: 0 0 0 1px color-mix(in oklab, var(--jade) 25%, transparent),
-                0 8px 40px -8px color-mix(in oklab, var(--jade) 35%, transparent);
   }
 
   @keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
@@ -189,20 +281,6 @@
     to   { opacity: 1; transform: translateY(0); }
   }
   .animate-fade-in-up { animation: fadeInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; }
-
-  /* Subtle float animation for decorative elements */
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50%       { transform: translateY(-6px); }
-  }
-  .animate-float { animation: float 4s ease-in-out infinite; }
-
-  /* Jade glow pulse */
-  @keyframes jade-pulse {
-    0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--jade) 40%, transparent); }
-    50%       { box-shadow: 0 0 0 6px color-mix(in oklab, var(--jade) 0%, transparent); }
-  }
-  .animate-jade-pulse { animation: jade-pulse 2s ease-in-out infinite; }
 }
 
 /* Accessibility: respect user preference for reduced motion */
@@ -221,9 +299,60 @@
 /* Performance: use GPU layer for fixed backgrounds */
 .bg-grid { will-change: auto; }
 
-/* Mobile: ensure tap targets are at least 48x48 per WCAG */
+/* ─── Mobile-First Premium Adaptations ─── */
+
+/* Mobile: ensure tap targets are at least 44x44px per WCAG */
 @media (max-width: 768px) {
-  a, button { min-height: 44px; }
-  nav a { min-height: 44px; }
+  a, button { min-height: 44px; min-width: 44px; }
+  nav a { min-height: 44px; min-width: 44px; }
+}
+
+/* Touch feedback: immediate opacity response within 50ms */
+@media (pointer: coarse) {
+  a:active,
+  button:active,
+  [role="button"]:active {
+    opacity: 0.7;
+    transition: opacity 0.05s ease;
+  }
+}
+
+/* Mobile navigation slide-in animation */
+@keyframes mobileNavIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-mobile-nav-in {
+  animation: mobileNavIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Portrait orientation: generous spacing for hero stacking */
+@media (orientation: portrait) and (max-width: 768px) {
+  .portrait\:gap-6 { gap: 1.5rem; }
+}
+
+/* will-change: apply sparingly only during active scroll animations */
+@media (max-width: 768px) {
+  /* Disable will-change on mobile by default — only GSAP applies it temporarily */
+  .reveal { will-change: auto; }
+  .bg-grid { will-change: auto; }
+  
+  /* Reduce backdrop-blur on mobile for performance */
+  .backdrop-blur-2xl { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+}
+
+/* Mobile terminal mockup: ensure readable scale with horizontal scroll */
+@media (max-width: 640px) {
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .overflow-x-auto::-webkit-scrollbar { display: none; }
 }
 

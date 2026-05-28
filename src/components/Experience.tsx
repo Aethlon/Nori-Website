@@ -15,13 +15,13 @@ const blocks = [
     output: (
       <div className="space-y-1.5 text-[13px]">
         <div className="flex items-center gap-2 text-foreground/80">
-          <Package className="size-3 text-foreground/60" />
+          <Package className="size-3 text-white/50" />
           <span>@acme/api · 42 tests</span>
         </div>
         <div className="grid grid-cols-[auto_1fr_auto] gap-x-3 text-muted-foreground">
-          <span className="text-jade">✓</span><span>routes/users.test.ts</span><span className="font-mono">312ms</span>
-          <span className="text-jade">✓</span><span>routes/auth.test.ts</span><span className="font-mono">488ms</span>
-          <span className="text-jade">✓</span><span>lib/cache.test.ts</span><span className="font-mono">94ms</span>
+          <span className="text-white/70">✓</span><span>routes/users.test.ts</span><span className="font-mono">312ms</span>
+          <span className="text-white/70">✓</span><span>routes/auth.test.ts</span><span className="font-mono">488ms</span>
+          <span className="text-white/70">✓</span><span>lib/cache.test.ts</span><span className="font-mono">94ms</span>
         </div>
       </div>
     ),
@@ -34,9 +34,9 @@ const blocks = [
     output: (
       <div className="space-y-1 text-[13px]">
         <div className="grid grid-cols-[auto_1fr_auto] gap-x-3">
-          <FileCode2 className="size-3 text-foreground/60 self-center" />
+          <FileCode2 className="size-3 text-white/50 self-center" />
           <span className="text-foreground/80">apps/web/app/page.tsx</span>
-          <span className="font-mono text-muted-foreground"><span className="text-jade">+42</span> <span className="text-destructive">-7</span></span>
+          <span className="font-mono text-muted-foreground"><span className="text-white/70">+42</span> <span className="text-destructive">-7</span></span>
         </div>
       </div>
     ),
@@ -48,7 +48,7 @@ const blocks = [
     status: "ok" as const,
     output: (
       <div className="text-[13px] text-muted-foreground">
-        → <span className="text-foreground/80">~/acme/services/api</span> · <span className="text-jade">on feat/auth</span>
+        → <span className="text-foreground/80">~/acme/services/api</span> · <span className="text-white/70">on feat/auth</span>
       </div>
     ),
   },
@@ -71,10 +71,10 @@ export function Experience() {
       const items = listRef.current?.querySelectorAll("li");
       if (items) {
         gsap.fromTo(items,
-          { opacity: 0, x: -16 },
+          { opacity: 0, x: -24, scale: 0.97 },
           {
-            opacity: 1, x: 0,
-            duration: 0.55, stagger: 0.1, ease: "expo.out",
+            opacity: 1, x: 0, scale: 1,
+            duration: 0.7, stagger: 0.12, ease: "expo.out",
             scrollTrigger: { trigger: listRef.current, start: "top 82%", once: true },
           }
         );
@@ -84,14 +84,11 @@ export function Experience() {
   }, []);
 
   return (
-    <section ref={sectionRef} id="experience" className="relative py-28 border-t hairline">
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent, color-mix(in oklab, var(--jade) 30%, transparent), transparent)" }} />
-
+    <section ref={sectionRef} id="experience" className="relative py-28 sm:py-36 border-t border-white/[0.04]">
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <div className="grid lg:grid-cols-[1fr_1.4fr] gap-12 lg:gap-16 items-center">
           <div>
-            <p className="reveal text-[11px] font-mono uppercase tracking-[0.22em] text-jade/80">Experience</p>
+            <p className="reveal text-[11px] font-mono uppercase tracking-[0.22em] text-white/50">Experience</p>
             <h2 className="reveal mt-4 text-3xl md:text-5xl font-semibold tracking-[-0.035em] text-balance text-gradient-soft">
               Keyboard-first.<br />Context-aware.
             </h2>
@@ -102,9 +99,9 @@ export function Experience() {
             <ul ref={listRef} className="mt-8 space-y-4 text-sm">
               {bullets.map(([t, d]) => (
                 <li key={t} className="flex gap-3 items-start group" style={{ opacity: 0 }}>
-                  <span className="mt-1.5 size-1.5 rounded-full bg-jade shrink-0 shadow-[0_0_6px_var(--jade)] group-hover:scale-125 transition-transform" />
+                  <span className="mt-1.5 size-1.5 rounded-full bg-white/60 shrink-0 group-hover:scale-125 transition-transform" />
                   <div>
-                    <div className="text-foreground/95 group-hover:text-foreground transition-colors">{t}</div>
+                    <div className="text-foreground/90 group-hover:text-foreground transition-colors">{t}</div>
                     <div className="text-muted-foreground">{d}</div>
                   </div>
                 </li>

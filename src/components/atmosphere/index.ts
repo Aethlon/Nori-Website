@@ -7,3 +7,4 @@ export { AmbientFog } from "./AmbientFog";
 export { CursorAura } from "./CursorAura";
 export { Scanlines } from "./Scanlines";
 export { GradientBloom } from "./GradientBloom";
+export { SilkBackground } from "./SilkBackground";

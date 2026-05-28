@@ -1,21 +1,14 @@
-/* ─── Main page ──────────────────────────────────────────────────────────── */
+/* ─── Nori Documentation Page ─────────────────────────────────────────────── */
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useReveal } from "@/hooks/use-reveal";
 import { useEffect, useState, useRef } from "react";
 import {
   Copy, Check, ArrowUpRight, Clock,
-  Terminal as TerminalIcon, Type, Rocket, Wrench, Sparkles, FileText,
+  Terminal as TerminalIcon, Type, Rocket, Wrench, Palette, FileText,
   GitBranch, Container, FolderOpen, Monitor, Wifi, Settings2, Keyboard,
-  Zap, Command, ChevronRight, Download, Search,
+  Zap, Command, ChevronRight, Download, Search, Hash, Layers, Code2,
+  BookOpen, Shield, RefreshCw, MousePointer, Cpu,
 } from "lucide-react";
-import {
-  NoiseLayer,
-  ParticleField,
-  GridOverlay,
-  Vignette,
-  CursorAura,
-  AmbientFog,
-} from "@/components/atmosphere";
 import noriLogo from "@/assets/nori.png";
 
 export const Route = createFileRoute("/docs")({
@@ -44,35 +37,45 @@ const navGroups: NavGroup[] = [
   {
     label: "Getting Started",
     items: [
-      { id: "overview",  label: "Overview",       icon: FileText },
-      { id: "install",   label: "Installation",   icon: TerminalIcon },
-      { id: "fonts",     label: "Fonts & glyphs", icon: Type },
-      { id: "first-run", label: "First run",       icon: Rocket },
+      { id: "overview",    label: "Overview",         icon: FileText },
+      { id: "install",     label: "Installation",     icon: TerminalIcon },
+      { id: "fonts",       label: "Fonts & Glyphs",   icon: Type },
+      { id: "first-run",   label: "First Run",        icon: Rocket },
+      { id: "config",      label: "Configuration",    icon: Settings2 },
     ],
   },
   {
     label: "Core Features",
     items: [
-      { id: "navigation", label: "Navigation",        icon: Command },
-      { id: "terminal",   label: "Terminal",           icon: TerminalIcon },
-      { id: "git",        label: "Git panel",          icon: GitBranch },
-      { id: "docker",     label: "Docker",             icon: Container },
-      { id: "files",      label: "Files explorer",     icon: FolderOpen },
-      { id: "ssh",        label: "SSH manager",        icon: Wifi },
-      { id: "monitor",    label: "System monitor",     icon: Monitor },
+      { id: "terminal",    label: "Terminal & PTY",    icon: TerminalIcon },
+      { id: "slash-cmds",  label: "Slash Commands",    icon: Hash },
+      { id: "git-aliases", label: "Git Aliases",       icon: Code2 },
+      { id: "git-panel",   label: "Git Workspace",     icon: GitBranch },
+      { id: "docker",      label: "Docker",            icon: Container },
+      { id: "files",       label: "File Explorer",     icon: FolderOpen },
+      { id: "monitor",     label: "System Monitor",    icon: Cpu },
+    ],
+  },
+  {
+    label: "Navigation & Input",
+    items: [
+      { id: "panels",      label: "Panel Switching",   icon: Layers },
+      { id: "keybindings", label: "Keybindings",       icon: Keyboard },
+      { id: "mouse",       label: "Mouse & Selection", icon: MousePointer },
+      { id: "history",     label: "Command History",   icon: RefreshCw },
     ],
   },
   {
     label: "Customization",
     items: [
-      { id: "themes",      label: "Themes",            icon: Settings2 },
-      { id: "keybindings", label: "Keybindings",       icon: Keyboard },
-      { id: "shell-int",   label: "Shell integration", icon: Zap },
+      { id: "themes",      label: "Themes",            icon: Palette },
+      { id: "shell-int",   label: "Shell Integration", icon: Zap },
     ],
   },
   {
     label: "Reference",
     items: [
+      { id: "architecture", label: "Architecture",     icon: BookOpen },
       { id: "troubleshooting", label: "Troubleshooting", icon: Wrench },
     ],
   },
@@ -83,30 +86,37 @@ const allItems = navGroups.flatMap((g) => g.items);
 /* ─── Section content map ────────────────────────────────────────────────── */
 function SectionContent({ id }: { id: string }) {
   switch (id) {
-    case "overview": return <OverviewSection />;
-    case "install":  return <InstallSection />;
-    case "fonts":    return <FontsSection />;
-    case "first-run":return <FirstRunSection />;
-    case "navigation":return <NavigationSection />;
-    case "terminal": return <TerminalSection />;
-    case "git":      return <GitSection />;
-    case "docker":   return <DockerSection />;
-    case "files":    return <FilesSection />;
-    case "ssh":      return <SshSection />;
-    case "monitor":  return <MonitorSection />;
-    case "themes":   return <ThemesSection />;
-    case "keybindings": return <KeybindingsSection />;
-    case "shell-int":return <ShellIntSection />;
+    case "overview":       return <OverviewSection />;
+    case "install":        return <InstallSection />;
+    case "fonts":          return <FontsSection />;
+    case "first-run":      return <FirstRunSection />;
+    case "config":         return <ConfigSection />;
+    case "terminal":       return <TerminalSection />;
+    case "slash-cmds":     return <SlashCommandsSection />;
+    case "git-aliases":    return <GitAliasesSection />;
+    case "git-panel":      return <GitPanelSection />;
+    case "docker":         return <DockerSection />;
+    case "files":          return <FilesSection />;
+    case "monitor":        return <MonitorSection />;
+    case "panels":         return <PanelsSection />;
+    case "keybindings":    return <KeybindingsSection />;
+    case "mouse":          return <MouseSection />;
+    case "history":        return <HistorySection />;
+    case "themes":         return <ThemesSection />;
+    case "shell-int":      return <ShellIntSection />;
+    case "architecture":   return <ArchitectureSection />;
     case "troubleshooting": return <TroubleshootingSection />;
     default: return null;
   }
 }
 
-/* ─── Main page ──────────────────────────────────────────────────────────── */
+/* ─── Main Docs Page ─────────────────────────────────────────────────────── */
 function DocsPage() {
   useReveal();
   const [active, setActive] = useState("overview");
   const [searchQuery, setSearchQuery] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const currentItem = allItems.find((i) => i.id === active) ?? allItems[0];
   const currentGroup = navGroups.find((g) => g.items.some((i) => i.id === active));
@@ -114,7 +124,7 @@ function DocsPage() {
   const prevItem = currentIndex > 0 ? allItems[currentIndex - 1] : null;
   const nextItem = currentIndex < allItems.length - 1 ? allItems[currentIndex + 1] : null;
 
-  // Keyboard navigation for search input trigger
+  // Keyboard shortcut for search
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
@@ -126,6 +136,12 @@ function DocsPage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  // Scroll to top on section change
+  useEffect(() => {
+    contentRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+    setSidebarOpen(false);
+  }, [active]);
+
   const filteredItems = searchQuery
     ? allItems.filter((item) =>
         item.label.toLowerCase().includes(searchQuery.toLowerCase())
@@ -133,290 +149,238 @@ function DocsPage() {
     : [];
 
   return (
-    <div className="relative min-h-screen bg-background text-foreground antialiased overflow-x-hidden selection:bg-jade/25 selection:text-foreground">
-      {/* High-fidelity environmental layers */}
-      <NoiseLayer />
-      <ParticleField density={25} interactive={false} />
-      <GridOverlay opacity={0.3} />
-      <Vignette />
-      <CursorAura />
-      <AmbientFog />
+    <div className="relative min-h-screen bg-[#060606] text-foreground antialiased overflow-hidden selection:bg-white/15 selection:text-foreground">
+      {/* Subtle background */}
+      <div aria-hidden className="pointer-events-none fixed inset-0 z-0 bg-grid opacity-[0.3]" />
+      <div aria-hidden className="pointer-events-none fixed inset-0 z-0"
+        style={{ background: "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(16,185,129,0.03), transparent 70%)" }} />
 
-      <div className="relative z-10 flex flex-col h-screen overflow-hidden">
-        {/* Mobile top header bar */}
-        <header className="lg:hidden fixed top-0 inset-x-0 z-30 h-14 bg-background/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-4">
-          <Link to="/" className="flex items-center gap-2">
-            <img src={noriLogo} alt="Nori" className="size-5.5 object-contain" />
-            <span className="font-mono text-[12px] font-semibold tracking-tight text-foreground/90">Nori Workspace</span>
-          </Link>
-          <Link to="/" className="text-[11px] font-mono text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
-            <span>Exit Docs</span>
-            <ArrowUpRight className="size-3" />
-          </Link>
-        </header>
+      <div className="relative z-10 flex h-screen overflow-hidden">
 
-        {/* Fixed two-column layout extending full-height */}
-        <div className="flex flex-1 overflow-hidden pt-14 lg:pt-0">
-
-          {/* ── LEFT SIDEBAR (code-editor style workspace panel) ── */}
-          <aside className="hidden lg:flex flex-col w-64 shrink-0 border-r border-white/5 bg-background/35 backdrop-blur-sm overflow-y-auto scrollbar-none select-none pt-5">
-            {/* Back Button */}
-            <div className="px-4 mb-3">
-              <Link
-                to="/"
-                className="flex items-center gap-2 px-3 py-1.5 text-[11px] font-mono text-muted-foreground/60 hover:text-foreground/80 hover:bg-white/[0.03] border border-white/[0.04] rounded-lg transition-all"
-              >
-                <svg viewBox="0 0 16 16" className="size-3 rotate-180" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M5 12l5-5-5-5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <span>Back to Workspace</span>
-              </Link>
-            </div>
-
-            {/* Folder Header */}
-            <div className="px-5 pb-4 border-b border-white/5 flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <img src={noriLogo} alt="Nori" className="size-4.5 object-contain" />
-                <span className="font-mono text-[12px] font-medium text-foreground/85">nori-terminal</span>
+        {/* ── SIDEBAR ── */}
+        <aside className={`
+          fixed inset-y-0 left-0 z-40 w-72 flex flex-col
+          bg-[#080808]/95 backdrop-blur-xl border-r border-white/[0.04]
+          transform transition-transform duration-300 ease-out
+          lg:relative lg:translate-x-0
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+        `}>
+          {/* Sidebar header */}
+          <div className="shrink-0 px-5 pt-5 pb-4 border-b border-white/[0.04]">
+            <Link to="/" className="group flex items-center gap-3 mb-4">
+              <img src={noriLogo} alt="Nori" className="size-7 rounded-lg object-contain" />
+              <div className="flex items-center gap-2">
+                <span className="text-[14px] font-semibold tracking-tight text-white/90">Nori Docs</span>
+                <span className="font-mono text-[8.5px] text-emerald-400/70 bg-emerald-500/[0.08] border border-emerald-500/[0.12] rounded-full px-1.5 py-0.5 uppercase tracking-[0.12em]">
+                  v0.1
+                </span>
               </div>
-              <span className="font-mono text-[9px] text-jade/80 bg-jade/10 border border-jade/20 rounded px-1.5 py-0.5 tracking-[0.08em]">v0.1</span>
-            </div>
+            </Link>
 
-            {/* Live Document Search Input */}
-            <div className="px-4 py-3 border-b border-white/[0.03]">
-              <div className="relative flex items-center">
-                <Search className="absolute left-3 size-3.5 text-muted-foreground/40 pointer-events-none" />
-                <input
-                  id="docs-search-input"
-                  type="text"
-                  placeholder="Search docs..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-12 py-1.5 rounded-lg bg-white/[0.02] border border-white/5 hover:border-white/10 focus:border-jade/30 text-[12px] placeholder:text-muted-foreground/45 text-foreground outline-none transition-all"
-                />
-                <kbd className="absolute right-2 px-1.5 py-0.5 rounded bg-white/[0.04] border border-white/10 text-[9px] text-muted-foreground/50 font-mono tracking-wide pointer-events-none select-none">
-                  ⌘K
-                </kbd>
-              </div>
-            </div>
-
-            {/* Sidebar Navigation Links */}
-            <nav className="flex-1 px-3 py-4 overflow-y-auto scrollbar-none">
-              {searchQuery ? (
-                <div className="space-y-1.5">
-                  <p className="px-2.5 mb-2 font-mono text-[9px] uppercase tracking-[0.24em] text-muted-foreground/40">
-                    Search Results ({filteredItems.length})
-                  </p>
-                  {filteredItems.length > 0 ? (
-                    <ul className="space-y-0.5">
-                      {filteredItems.map((item) => {
-                        const isActive = active === item.id;
-                        const Icon = item.icon;
-                        return (
-                          <li key={item.id}>
-                            <button
-                              onClick={() => {
-                                setActive(item.id);
-                                setSearchQuery("");
-                              }}
-                              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12.5px] text-left transition-all duration-150 group relative ${
-                                isActive
-                                  ? "bg-jade/10 text-foreground font-medium border border-jade/20 shadow-[0_0_15px_rgba(110,231,183,0.03)]"
-                                  : "text-muted-foreground hover:text-foreground hover:bg-white/[0.02]"
-                              }`}
-                            >
-                              {isActive && (
-                                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[2.5px] h-4.5 bg-jade rounded-r shadow-[0_0_8px_var(--jade)] animate-pulse" />
-                              )}
-                              <Icon className={`size-3.5 shrink-0 transition-colors ${isActive ? "text-jade" : "text-muted-foreground/50 group-hover:text-muted-foreground"}`} />
-                              <span className="flex-1 truncate">{item.label}</span>
-                            </button>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  ) : (
-                    <p className="px-2.5 py-4 text-[11.5px] text-muted-foreground/40 font-mono italic">No results found.</p>
-                  )}
-                </div>
-              ) : (
-                <div className="space-y-5">
-                  {navGroups.map((group) => (
-                    <div key={group.label}>
-                      <p className="px-2.5 mb-2 font-mono text-[9px] uppercase tracking-[0.24em] text-muted-foreground/45">
-                        {group.label}
-                      </p>
-                      <ul className="space-y-px">
-                        {group.items.map((item) => {
-                          const isActive = active === item.id;
-                          const Icon = item.icon;
-                          return (
-                            <li key={item.id}>
-                              <button
-                                onClick={() => setActive(item.id)}
-                                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12.5px] text-left transition-all duration-150 group relative ${
-                                  isActive
-                                    ? "bg-jade/10 text-foreground font-medium border border-jade/20 shadow-[0_0_15px_rgba(110,231,183,0.03)]"
-                                    : "text-muted-foreground hover:text-foreground hover:bg-white/[0.02]"
-                                }`}
-                              >
-                                {isActive && (
-                                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[2.5px] h-4.5 bg-jade rounded-r shadow-[0_0_8px_var(--jade)]" />
-                                )}
-                                <Icon className={`size-3.5 shrink-0 transition-colors ${isActive ? "text-jade" : "text-muted-foreground/50 group-hover:text-muted-foreground"}`} />
-                                <span className="flex-1 truncate">{item.label}</span>
-                                {isActive && (
-                                  <span className="size-1 rounded-full bg-jade shrink-0 shadow-[0_0_6px_var(--jade)]" />
-                                )}
-                              </button>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </nav>
-
-            {/* Sidebar Footer Link Panel */}
-            <div className="px-4 py-4 border-t border-white/5 space-y-px">
-              {[
-                { to: "/changelog", label: "Changelog" },
-                { to: "/feedback",  label: "Feedback" },
-              ].map((l) => (
-                <Link key={l.to} to={l.to}
-                  className="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-[11.5px] text-muted-foreground hover:text-foreground hover:bg-white/[0.02] transition-all">
-                  {l.label}
-                  <ArrowUpRight className="size-3 opacity-40" />
-                </Link>
-              ))}
-            </div>
-          </aside>
-
-          {/* ── RIGHT CONTENT (scrolls independently) ── */}
-          <main className="flex-1 overflow-y-auto scrollbar-thin">
-            <div className="max-w-3xl mx-auto px-6 sm:px-10 py-8 lg:py-16 pb-24 lg:pb-16">
-
-              {/* Breadcrumb with animations */}
-              <div className="flex items-center gap-1.5 mb-6 text-[11px] font-mono text-muted-foreground/45 animate-fade-in-up" key={`bc-${active}`}>
-                <span>Docs</span>
-                <ChevronRight className="size-3 text-muted-foreground/30" />
-                <span className="text-muted-foreground/60">{currentGroup?.label}</span>
-                <ChevronRight className="size-3 text-muted-foreground/30" />
-                <span className="text-jade">{currentItem.label}</span>
-              </div>
-
-              {/* Section title and visual divider */}
-              <div className="flex items-center gap-4 mb-8 pb-6 border-b border-white/5">
-                {(() => {
-                  const Icon = currentItem.icon;
-                  return (
-                    <div className="size-10 rounded-xl bg-jade/10 border border-jade/20 grid place-items-center shrink-0 shadow-[0_0_15px_rgba(110,231,183,0.05)]">
-                      <Icon className="size-5 text-jade" />
-                    </div>
-                  );
-                })()}
-                <div>
-                  <p className="font-mono text-[9px] uppercase tracking-[0.26em] text-muted-foreground/40 mb-0.5">{currentGroup?.label}</p>
-                  <h1 className="text-2xl sm:text-3xl font-medium tracking-[-0.03em] text-foreground">{currentItem.label}</h1>
-                </div>
-              </div>
-
-              {/* Section body content with custom fade-in trigger */}
-              <div className="space-y-8 text-[14.5px] leading-[1.8] text-muted-foreground animate-fade-in-up" key={active}>
-                <SectionContent id={active} />
-              </div>
-
-              {/* Prev / Next navigation pills */}
-              <div className="mt-16 pt-8 border-t border-white/5 flex items-center justify-between gap-4">
-                {prevItem ? (
-                  <button onClick={() => setActive(prevItem.id)}
-                    className="group flex items-center gap-3 text-left hover:text-foreground transition-colors outline-none">
-                    <div className="size-9 rounded-lg border border-white/5 bg-white/[0.01] grid place-items-center group-hover:border-white/10 group-hover:bg-white/[0.03] transition-all">
-                      <ChevronRight className="size-4 rotate-180 text-muted-foreground/60 group-hover:text-foreground" />
-                    </div>
-                    <div>
-                      <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40">Previous</p>
-                      <p className="text-[13px] text-muted-foreground/80 group-hover:text-foreground transition-colors">{prevItem.label}</p>
-                    </div>
-                  </button>
-                ) : <div />}
-                {nextItem ? (
-                  <button onClick={() => setActive(nextItem.id)}
-                    className="group flex items-center gap-3 text-right hover:text-foreground transition-colors outline-none">
-                    <div>
-                      <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40">Next</p>
-                      <p className="text-[13px] text-muted-foreground/80 group-hover:text-foreground transition-colors">{nextItem.label}</p>
-                    </div>
-                    <div className="size-9 rounded-lg border border-white/5 bg-white/[0.01] grid place-items-center group-hover:border-white/10 group-hover:bg-white/[0.03] transition-all">
-                      <ChevronRight className="size-4 text-muted-foreground/60 group-hover:text-foreground" />
-                    </div>
-                  </button>
-                ) : <div />}
-              </div>
-
-            </div>
-          </main>
-
-          {/* Mobile bottom navigation capsule */}
-          <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-background/90 backdrop-blur-md border-t border-white/5 overflow-x-auto scrollbar-none">
-            <div className="flex gap-1.5 px-4 py-3 min-w-max">
-              {allItems.map((s) => (
-                <button key={s.id} onClick={() => setActive(s.id)}
-                  className={`text-[10px] font-mono px-3.5 py-1.5 rounded-full border transition-all whitespace-nowrap ${
-                    active === s.id
-                      ? "border-jade/40 text-foreground bg-jade/10 shadow-[0_0_10px_rgba(110,231,183,0.03)]"
-                      : "border-white/5 text-muted-foreground/70 hover:text-foreground hover:bg-white/[0.02]"
-                  }`}>
-                  {s.label}
-                </button>
-              ))}
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-white/25 pointer-events-none" />
+              <input
+                id="docs-search-input"
+                type="text"
+                placeholder="Search documentation..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-14 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-white/[0.1] focus:border-emerald-500/30 focus:bg-white/[0.04] text-[12.5px] placeholder:text-white/25 text-foreground outline-none transition-all"
+              />
+              <kbd className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded-md bg-white/[0.04] border border-white/[0.08] text-[9px] text-white/30 font-mono pointer-events-none">
+                ⌘K
+              </kbd>
             </div>
           </div>
 
-        </div>
+          {/* Navigation */}
+          <nav className="flex-1 overflow-y-auto scrollbar-none px-3 py-4">
+            {searchQuery ? (
+              <div className="space-y-1">
+                <p className="px-3 mb-3 font-mono text-[9px] uppercase tracking-[0.25em] text-white/25">
+                  {filteredItems.length} result{filteredItems.length !== 1 ? "s" : ""}
+                </p>
+                {filteredItems.length > 0 ? (
+                  filteredItems.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <button key={item.id}
+                        onClick={() => { setActive(item.id); setSearchQuery(""); }}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] text-left text-white/70 hover:text-white hover:bg-white/[0.04] transition-all">
+                        <Icon className="size-4 text-white/40" />
+                        <span>{item.label}</span>
+                      </button>
+                    );
+                  })
+                ) : (
+                  <p className="px-3 py-6 text-[12px] text-white/25 text-center">No results found</p>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {navGroups.map((group) => (
+                  <div key={group.label}>
+                    <p className="px-3 mb-2 font-mono text-[9px] uppercase tracking-[0.25em] text-white/20 font-medium">
+                      {group.label}
+                    </p>
+                    <div className="space-y-0.5">
+                      {group.items.map((item) => {
+                        const isActive = active === item.id;
+                        const Icon = item.icon;
+                        return (
+                          <button key={item.id}
+                            onClick={() => setActive(item.id)}
+                            className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] text-left transition-all duration-200 group relative ${
+                              isActive
+                                ? "bg-white/[0.06] text-white border border-white/[0.08]"
+                                : "text-white/50 hover:text-white/80 hover:bg-white/[0.02] border border-transparent"
+                            }`}>
+                            {isActive && (
+                              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-emerald-400/70 rounded-r-full" />
+                            )}
+                            <Icon className={`size-4 shrink-0 transition-colors ${isActive ? "text-emerald-400/70" : "text-white/25 group-hover:text-white/40"}`} />
+                            <span className="flex-1 truncate">{item.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </nav>
+
+          {/* Sidebar footer */}
+          <div className="shrink-0 px-4 py-4 border-t border-white/[0.04] space-y-1">
+            <Link to="/changelog"
+              className="flex items-center justify-between px-3 py-2 rounded-lg text-[12px] text-white/40 hover:text-white/70 hover:bg-white/[0.02] transition-all">
+              Changelog <ArrowUpRight className="size-3 opacity-40" />
+            </Link>
+            <Link to="/feedback"
+              className="flex items-center justify-between px-3 py-2 rounded-lg text-[12px] text-white/40 hover:text-white/70 hover:bg-white/[0.02] transition-all">
+              Feedback <ArrowUpRight className="size-3 opacity-40" />
+            </Link>
+            <a href="https://github.com/Aethlon/Nori" target="_blank" rel="noopener noreferrer"
+              className="flex items-center justify-between px-3 py-2 rounded-lg text-[12px] text-white/40 hover:text-white/70 hover:bg-white/[0.02] transition-all">
+              GitHub <ArrowUpRight className="size-3 opacity-40" />
+            </a>
+          </div>
+        </aside>
+
+        {/* Mobile overlay */}
+        {sidebarOpen && (
+          <div className="fixed inset-0 z-30 bg-black/60 lg:hidden" onClick={() => setSidebarOpen(false)} />
+        )}
+
+        {/* ── MAIN CONTENT ── */}
+        <main ref={contentRef} className="flex-1 overflow-y-auto">
+          {/* Mobile header */}
+          <div className="lg:hidden sticky top-0 z-20 h-14 bg-[#060606]/90 backdrop-blur-xl border-b border-white/[0.04] flex items-center justify-between px-4">
+            <button onClick={() => setSidebarOpen(true)} className="size-9 grid place-items-center rounded-lg border border-white/[0.06] text-white/60">
+              <svg viewBox="0 0 16 16" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M2 4h12M2 8h12M2 12h12" strokeLinecap="round" />
+              </svg>
+            </button>
+            <span className="text-[12px] font-mono text-white/50">{currentItem.label}</span>
+            <Link to="/" className="text-[11px] text-white/40 hover:text-white/70 transition-colors">Exit</Link>
+          </div>
+
+          <div className="max-w-4xl mx-auto px-6 sm:px-10 py-10 lg:py-16 pb-24">
+            {/* Breadcrumb */}
+            <div className="flex items-center gap-1.5 mb-8 text-[11px] font-mono text-white/30" key={`bc-${active}`}>
+              <Link to="/docs" className="hover:text-white/60 transition-colors">docs</Link>
+              <ChevronRight className="size-3 text-white/15" />
+              <span className="text-white/40">{currentGroup?.label.toLowerCase()}</span>
+              <ChevronRight className="size-3 text-white/15" />
+              <span className="text-white/70">{currentItem.label.toLowerCase()}</span>
+            </div>
+
+            {/* Page title */}
+            <div className="flex items-start gap-5 mb-10 pb-8 border-b border-white/[0.04]">
+              {(() => {
+                const Icon = currentItem.icon;
+                return (
+                  <div className="size-12 rounded-2xl bg-gradient-to-br from-white/[0.06] to-white/[0.02] border border-white/[0.08] grid place-items-center shrink-0">
+                    <Icon className="size-5 text-emerald-400/60" />
+                  </div>
+                );
+              })()}
+              <div>
+                <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-emerald-400/50 mb-1.5">{currentGroup?.label}</p>
+                <h1 className="text-3xl sm:text-4xl font-medium tracking-[-0.035em] text-white/95">{currentItem.label}</h1>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="space-y-8 text-[14.5px] leading-[1.85] text-white/60 animate-fade-in-up" key={active}>
+              <SectionContent id={active} />
+            </div>
+
+            {/* Prev / Next */}
+            <div className="mt-20 pt-8 border-t border-white/[0.04] grid grid-cols-2 gap-4">
+              {prevItem ? (
+                <button onClick={() => setActive(prevItem.id)}
+                  className="group flex flex-col items-start gap-2 p-5 rounded-2xl border border-white/[0.04] hover:border-white/[0.08] hover:bg-white/[0.02] transition-all text-left">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/25">← Previous</p>
+                  <p className="text-[14px] text-white/60 group-hover:text-white/90 transition-colors">{prevItem.label}</p>
+                </button>
+              ) : <div />}
+              {nextItem ? (
+                <button onClick={() => setActive(nextItem.id)}
+                  className="group flex flex-col items-end gap-2 p-5 rounded-2xl border border-white/[0.04] hover:border-white/[0.08] hover:bg-white/[0.02] transition-all text-right">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/25">Next →</p>
+                  <p className="text-[14px] text-white/60 group-hover:text-white/90 transition-colors">{nextItem.label}</p>
+                </button>
+              ) : <div />}
+            </div>
+          </div>
+        </main>
       </div>
     </div>
   );
 }
 
-/* ─── Individual sections ────────────────────────────────────────────────── */
+/* ─── SECTIONS ───────────────────────────────────────────────────────────── */
+
 function OverviewSection() {
   return (
     <>
       <p>
-        Nori is a high-performance, developer-focused terminal and workspace environment built in Rust.
-        It integrates your shell, Git, Docker, file system, and SSH connections into a single, highly interactive workspace —
-        designed for developers who live in the terminal but crave the organizational power of a modern IDE.
+        Nori is a high-performance terminal workspace built entirely in <span className="text-white/90 font-medium">Rust</span>.
+        It combines your shell, Git, Docker, file system, and system monitoring into a single TUI application —
+        designed for developers who live in the terminal but want the organizational power of a modern IDE.
       </p>
       <p>
-        Nori minimizes context switching and maximizes speed. Everything is keyboard-first, and every panel is one shortcut away.
+        Every interaction is keyboard-first. Every panel is one shortcut away. Nori minimizes context switching
+        and maximizes speed — cold start in under 50ms, sub-millisecond block rendering, and 14MB memory at rest.
       </p>
-      <div className="not-prose grid sm:grid-cols-2 gap-3 mt-2">
+      <div className="not-prose grid sm:grid-cols-2 gap-3 mt-4">
         {[
-          { icon: Zap,      title: "Blazing Fast PTY Engine",   body: "Native pseudo-terminal via portable-pty. Supports interactive CLI tools, ANSI graphics, and full color spaces without lag or layout breakage." },
-          { icon: Command,  title: "Unified Workspace Panels",  body: "Jump between Terminal, Git, Docker, Files, Monitor, and SSH using dedicated sidebar tabs — all in one window." },
-          { icon: Sparkles, title: "Dynamic Theming",           body: "Switch between Jade, Ocean, Dracula, Nord, and Gruvbox instantly. The UI redraws immediately with new color tokens." },
-          { icon: Keyboard, title: "Keyboard-First",            body: "Everything from swapping panels to stopping containers can be done without touching the mouse." },
+          { icon: Zap, title: "Native PTY Engine", body: "Full pseudo-terminal via portable-pty. Supports interactive tools (vim, htop, npm init), ANSI graphics, and true color without lag." },
+          { icon: Layers, title: "6 Integrated Panels", body: "Terminal, Git Workspace, Docker, File Explorer, System Monitor, and Settings — all in one window, switchable instantly." },
+          { icon: GitBranch, title: "Deep Git Integration", body: "Live branch status, inline diffs, stage/unstage/discard per-file, commit, branch switching, stash management — all without leaving Nori." },
+          { icon: Container, title: "Docker Compose Aware", body: "Auto-detects compose manifests. Start, stop, restart containers. View logs. Shell into running containers." },
+          { icon: Palette, title: "Dynamic Theming", body: "Switch between Jade, Ocean, Dracula, Nord, Gruvbox themes instantly. The entire UI redraws with new color tokens." },
+          { icon: Keyboard, title: "Keyboard-First Design", body: "Everything from panel switching to container management is reachable without touching the mouse." },
         ].map((card) => {
           const Icon = card.icon;
           return (
-            <div key={card.title} className="group relative rounded-xl border hairline bg-surface/30 p-5 overflow-hidden hover:border-foreground/15 transition-all duration-300">
+            <div key={card.title} className="group relative rounded-2xl border border-white/[0.05] bg-white/[0.015] p-5 overflow-hidden hover:border-white/[0.1] transition-all duration-300">
               <div aria-hidden className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                style={{ background: "radial-gradient(250px circle at 0% 0%, color-mix(in oklab, var(--jade) 8%, transparent), transparent 70%)" }} />
-              <Icon className="size-4 text-jade mb-3" />
-              <h3 className="text-[13px] font-medium text-foreground mb-1.5">{card.title}</h3>
-              <p className="text-[12.5px] text-muted-foreground leading-relaxed">{card.body}</p>
+                style={{ background: "radial-gradient(200px circle at 0% 0%, rgba(16,185,129,0.06), transparent 70%)" }} />
+              <Icon className="size-4 text-emerald-400/60 mb-3" />
+              <h3 className="text-[13.5px] font-medium text-white/90 mb-1.5">{card.title}</h3>
+              <p className="text-[12.5px] text-white/45 leading-relaxed">{card.body}</p>
             </div>
           );
         })}
       </div>
-      <div className="not-prose mt-2 rounded-xl border hairline bg-surface/20 px-5 py-4">
-        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/50 mb-3">Built with</p>
+      <div className="not-prose mt-6 rounded-2xl border border-white/[0.05] bg-white/[0.015] px-6 py-5">
+        <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-white/25 mb-3">Built with</p>
         <div className="flex flex-wrap gap-2">
-          {["Rust", "ratatui", "portable-pty", "tokio", "crossterm"].map((t) => (
-            <span key={t} className="font-mono text-[11.5px] text-foreground/70 border hairline rounded-full px-3 py-1">{t}</span>
+          {["Rust", "ratatui", "portable-pty", "tokio", "crossterm", "sysinfo", "arboard"].map((t) => (
+            <span key={t} className="font-mono text-[11px] text-white/60 border border-white/[0.06] bg-white/[0.02] rounded-full px-3 py-1">{t}</span>
           ))}
         </div>
       </div>
@@ -428,48 +392,47 @@ function InstallSection() {
   return (
     <>
       <p>
-        Nori is built from source. Ensure you have the{" "}
-        <a href="https://rustup.rs/" target="_blank" rel="noreferrer" className="text-foreground underline underline-offset-2 decoration-foreground/30 hover:decoration-foreground transition-colors">
-          Rust toolchain
+        Nori is built from source using the Rust toolchain. Ensure you have{" "}
+        <a href="https://rustup.rs/" target="_blank" rel="noreferrer" className="text-white/80 underline underline-offset-2 decoration-white/20 hover:decoration-white/50 transition-colors">
+          rustup
         </a>{" "}
-        installed via <InlineCode>rustup</InlineCode>.
+        installed (Rust 1.75+).
       </p>
-      <Code label="Clone & build" lang="bash">{`# Clone the repository
-git clone https://github.com/jenithpaul/nori.git
-cd nori
+      <Code label="Install" lang="bash">{`# Download the latest release from:
+# https://github.com/Aethlon/Nori/releases
 
-# Build for release (optimized for performance)
-cargo build --release
-
-# Run Nori
-./target/release/nori`}</Code>
+# Windows: Run the .exe installer
+# macOS: Open the .dmg (coming soon)
+# Linux: Run the .AppImage or install .deb (coming soon)`}</Code>
       <p>
-        Upon first launch, Nori creates a configuration directory at{" "}
-        <InlineCode>~/.nori/</InlineCode> (or <InlineCode>%USERPROFILE%\.nori\</InlineCode> on Windows).
-        This stores your settings, SSH profiles, and shell integration scripts.
+        On first launch, Nori creates a configuration directory at <InlineCode>~/.nori/</InlineCode>{" "}
+        (or <InlineCode>%USERPROFILE%\\.nori\\</InlineCode> on Windows) containing your settings, history, and shell integration scripts.
       </p>
       <Callout>
-        A pre-built Windows x86_64 binary is available from the <Link to="/download" className="text-jade hover:text-jade/80 transition-colors underline underline-offset-2">download page</Link>.
+        A pre-built Windows x86_64 binary is available from the{" "}
+        <Link to="/download" className="text-white/80 underline underline-offset-2">download page</Link>.
         macOS and Linux builds are coming soon.
       </Callout>
-      <div className="not-prose rounded-xl border hairline bg-surface/20 overflow-hidden">
-        <div className="px-4 py-3 border-b hairline bg-surface/30">
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60">Requirements</p>
+      <div className="not-prose rounded-2xl border border-white/[0.05] bg-white/[0.015] overflow-hidden">
+        <div className="px-5 py-3 border-b border-white/[0.04] bg-white/[0.02]">
+          <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-white/30">System Requirements</p>
         </div>
-        <div className="divide-y hairline">
+        <div className="divide-y divide-white/[0.04]">
           {[
             { name: "Rust", version: "1.75+", note: "Install via rustup.rs" },
             { name: "Cargo", version: "bundled", note: "Comes with Rust toolchain" },
-            { name: "Git", version: "any", note: "For cloning the repository" },
+            { name: "Git", version: "2.x+", note: "For repository features" },
+            { name: "Docker", version: "optional", note: "For container management panel" },
+            { name: "Nerd Font", version: "any", note: "For glyph rendering (recommended)" },
           ].map((r) => (
-            <div key={r.name} className="flex items-center justify-between px-4 py-3">
+            <div key={r.name} className="flex items-center justify-between px-5 py-3">
               <div className="flex items-center gap-3">
-                <span className="size-1.5 rounded-full bg-jade/60" />
-                <span className="text-[13px] text-foreground/80 font-medium">{r.name}</span>
+                <span className="size-1.5 rounded-full bg-emerald-400/50" />
+                <span className="text-[13px] text-white/80 font-medium">{r.name}</span>
               </div>
-              <div className="flex items-center gap-3 text-right">
-                <span className="font-mono text-[11px] text-jade/70">{r.version}</span>
-                <span className="text-[11.5px] text-muted-foreground/60">{r.note}</span>
+              <div className="flex items-center gap-4 text-right">
+                <span className="font-mono text-[11px] text-white/50">{r.version}</span>
+                <span className="text-[11.5px] text-white/30 hidden sm:inline">{r.note}</span>
               </div>
             </div>
           ))}
@@ -483,36 +446,40 @@ function FontsSection() {
   return (
     <>
       <p>
-        Nori uses glyphs for status indicators, branch icons, and block markers from a{" "}
-        <span className="text-foreground font-medium">Nerd Font</span>. Without one, certain symbols render as boxes or question marks.
+        Nori uses Nerd Font glyphs for file-type icons, Git status indicators, Docker markers, and branch symbols.
+        Without a Nerd Font installed, these render as boxes or question marks.
       </p>
-      <div className="not-prose group relative rounded-2xl border hairline bg-surface/30 p-6 overflow-hidden">
+      <div className="not-prose group relative rounded-2xl border border-white/[0.05] bg-white/[0.015] p-6 overflow-hidden">
         <div aria-hidden className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
-          style={{ background: "radial-gradient(400px circle at 80% 0%, color-mix(in oklab, var(--jade) 12%, transparent), transparent 60%)" }} />
+          style={{ background: "radial-gradient(400px circle at 80% 0%, rgba(16,185,129,0.05), transparent 60%)" }} />
         <div className="relative flex items-start justify-between gap-6 flex-wrap">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-jade">Recommended</p>
-            <h3 className="mt-2 text-xl font-medium tracking-tight text-foreground">JetBrains Mono · Nerd Font</h3>
-            <p className="mt-1.5 text-[12px] text-muted-foreground font-mono">NL variant · ligatures · 4,000+ glyphs</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-emerald-400/50">Recommended</p>
+            <h3 className="mt-2 text-xl font-medium tracking-tight text-white/90">JetBrains Mono · Nerd Font</h3>
+            <p className="mt-1.5 text-[12px] text-white/40 font-mono">NL variant · ligatures · 4,000+ glyphs</p>
           </div>
-          <div className="font-serif italic text-5xl text-foreground/25 select-none leading-none">Aa</div>
+          <div className="font-serif italic text-5xl text-white/10 select-none leading-none">Aa</div>
         </div>
         <div className="relative mt-5 flex flex-col sm:flex-row gap-3">
           <a href={NERD_FONT_URL} target="_blank" rel="noreferrer"
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-foreground text-background px-5 py-2.5 text-[13px] font-medium hover:-translate-y-px transition-all">
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-white text-[#0A0A0A] px-5 py-2.5 text-[13px] font-medium hover:-translate-y-px transition-all">
             Download font <Download className="size-3.5" />
           </a>
           <a href="https://www.nerdfonts.com/font-downloads" target="_blank" rel="noreferrer"
-            className="inline-flex items-center justify-center gap-2 rounded-full border hairline px-5 py-2.5 text-[13px] text-muted-foreground hover:text-foreground hover:border-foreground/20 transition-colors">
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/[0.08] px-5 py-2.5 text-[13px] text-white/60 hover:text-white hover:border-white/[0.15] transition-all">
             Browse all Nerd Fonts <ArrowUpRight className="size-3.5" />
           </a>
         </div>
       </div>
+      <p>
+        On Windows, Nori automatically attempts to install JetBrainsMono Nerd Font and configure the console font on first launch.
+        If auto-setup fails, install manually:
+      </p>
       <Steps items={[
-        "Download and unzip the font archive.",
-        "Install: double-click on Windows/macOS, or copy to ~/.local/share/fonts on Linux.",
-        "Open Nori → Settings → Appearance → Font and select 'JetBrainsMono Nerd Font'.",
-        "Confirm the test glyphs render correctly in the preview pane.",
+        "Download and unzip the JetBrainsMono Nerd Font archive.",
+        "Install: double-click .ttf files on Windows/macOS, or copy to ~/.local/share/fonts on Linux.",
+        "Set your terminal emulator's font to 'JetBrainsMono Nerd Font' (if running Nori inside another terminal).",
+        "Verify glyphs render correctly — file icons, branch symbols, and status markers should display properly.",
       ]} />
     </>
   );
@@ -522,69 +489,85 @@ function FirstRunSection() {
   return (
     <>
       <p>
-        On first launch Nori creates a local profile, runs a shell probe, and walks through keymap selection.
-        Subsequent launches are sub-50ms.
+        On first launch, Nori performs a one-time setup: creates the config directory, probes your default shell,
+        installs Nerd Font (Windows), and initializes the command history file. Subsequent launches are sub-50ms.
       </p>
-      <Code label="Launch" lang="bash">{`nori                    # if installed to PATH
-./target/release/nori   # directly from source build`}</Code>
-      <p>
-        The config directory at <InlineCode>~/.nori/</InlineCode> is created automatically and holds:
-      </p>
-      <div className="not-prose rounded-xl border hairline bg-surface/20 overflow-hidden">
-        <div className="divide-y hairline">
+      <Code label="Launch" lang="bash">{`# If installed to PATH
+nori
+
+# Directly from source build
+./target/release/nori
+
+# Windows (from build directory)
+.\\target\\release\\nori.exe`}</Code>
+      <p>The config directory structure created at <InlineCode>~/.nori/</InlineCode>:</p>
+      <div className="not-prose rounded-2xl border border-white/[0.05] bg-white/[0.015] overflow-hidden">
+        <div className="divide-y divide-white/[0.04]">
           {[
-            { file: "~/.nori/config.toml",      desc: "Global settings and preferences" },
-            { file: "~/.nori/ssh_config",        desc: "SSH profile definitions" },
-            { file: "~/.nori/shell/",            desc: "Shell integration scripts (zsh, bash, fish)" },
+            { file: "~/.nori/config.toml", desc: "Global settings — theme, shell, prompt marker, startup directory" },
+            { file: "~/.nori/history", desc: "Persistent command history (survives restarts)" },
           ].map((r) => (
-            <div key={r.file} className="flex items-center gap-4 px-4 py-3">
+            <div key={r.file} className="flex items-start gap-4 px-5 py-3.5">
               <InlineCode>{r.file}</InlineCode>
-              <span className="text-[12.5px] text-muted-foreground">{r.desc}</span>
+              <span className="text-[12.5px] text-white/45 pt-0.5">{r.desc}</span>
             </div>
           ))}
         </div>
       </div>
-      <Callout>First-run cache build may take a few seconds. All subsequent launches are sub-50ms.</Callout>
+      <Callout>First-run font installation may take a few seconds on Windows. All subsequent launches are instant.</Callout>
     </>
   );
 }
 
-function NavigationSection() {
+function ConfigSection() {
   return (
     <>
       <p>
-        Nori is divided into specialized panels. Use <Kbd>Alt+Number</Kbd> or <Kbd>F1</Kbd>–<Kbd>F7</Kbd> to jump between them instantly.
-        Cycle sequentially with <Kbd>Alt+←</Kbd> and <Kbd>Alt+→</Kbd>.
+        Nori's configuration lives in <InlineCode>~/.nori/config.toml</InlineCode>. It's a simple TOML file
+        that you can edit manually or let Nori manage through the Settings panel.
       </p>
-      <div className="not-prose overflow-x-auto rounded-xl border hairline">
-        <table className="w-full text-[13px]">
-          <thead>
-            <tr className="border-b hairline bg-surface/30">
-              <th className="text-left px-4 py-3 font-mono text-[9.5px] uppercase tracking-[0.2em] text-muted-foreground/60">Panel</th>
-              <th className="text-left px-4 py-3 font-mono text-[9.5px] uppercase tracking-[0.2em] text-muted-foreground/60">Shortcut</th>
-              <th className="text-left px-4 py-3 font-mono text-[9.5px] uppercase tracking-[0.2em] text-muted-foreground/60">Description</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y hairline">
-            {[
-              ["Terminal", "Alt+1 / F1", "Primary PTY shell. Handles all I/O and interactive prompts."],
-              ["Git",      "Alt+2 / F2", "Working tree, branch status, and repository health."],
-              ["Docker",   "Alt+3 / F3", "Monitor, start, stop, and restart containers interactively."],
-              ["Files",    "Alt+4 / F4", "Browse directory tree and preview file contents."],
-              ["Monitor",  "Alt+5 / F5", "Live CPU and RAM monitoring."],
-              ["SSH",      "Alt+6 / F6", "Save, edit, and connect to remote hosts."],
-              ["Settings", "Alt+7 / F7", "Themes, UI toggles, and global preferences."],
-            ].map(([panel, shortcut, desc]) => (
-              <tr key={panel} className="hover:bg-surface/20 transition-colors">
-                <td className="px-4 py-3 font-medium text-foreground/90 whitespace-nowrap">{panel}</td>
-                <td className="px-4 py-3 whitespace-nowrap"><Kbd>{shortcut}</Kbd></td>
-                <td className="px-4 py-3 text-muted-foreground">{desc}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <Code label="~/.nori/config.toml" lang="toml">{`# Nori configuration file
+# Generated automatically — you can edit this manually too.
+
+# Directory to open on launch (defaults to cwd)
+startup_dir = "~/projects"
+
+# Override default shell (auto-detected if omitted)
+# shell = "pwsh"
+
+# Prompt marker character
+prompt_marker = "❯"
+
+# Home directory display character
+home_marker = "~"
+
+# Show repository header bar (branch, ahead/behind)
+show_repo_header = true
+
+# Active color theme
+theme = "jade"`}</Code>
+      <h3 className="text-[16px] font-medium text-white/90 mt-8 mb-3">Configuration Options</h3>
+      <div className="not-prose rounded-2xl border border-white/[0.05] bg-white/[0.015] overflow-hidden">
+        <div className="divide-y divide-white/[0.04]">
+          {[
+            { key: "startup_dir", type: "string", desc: "Absolute or ~ path. Nori opens here on launch. Falls back to current working directory." },
+            { key: "shell", type: "string", desc: "Shell binary to use (e.g. \"pwsh\", \"bash\", \"zsh\"). Auto-detected from $SHELL or COMSPEC if omitted." },
+            { key: "prompt_marker", type: "string", desc: "Character shown before the input cursor. Default: ❯" },
+            { key: "home_marker", type: "string", desc: "Character used to abbreviate home directory in paths. Default: ~" },
+            { key: "show_repo_header", type: "bool", desc: "Toggle the Git repository status bar at the top. Hiding it gives more vertical space." },
+            { key: "theme", type: "string", desc: "Color theme name. Options: jade, ocean, dracula, nord, gruvbox" },
+          ].map((opt) => (
+            <div key={opt.key} className="px-5 py-3.5">
+              <div className="flex items-center gap-3 mb-1">
+                <code className="font-mono text-[12px] text-emerald-400/70">{opt.key}</code>
+                <span className="font-mono text-[10px] text-white/25 bg-white/[0.03] border border-white/[0.06] rounded px-1.5 py-0.5">{opt.type}</span>
+              </div>
+              <p className="text-[12.5px] text-white/45">{opt.desc}</p>
+            </div>
+          ))}
+        </div>
       </div>
-      <Callout>Use <Kbd>Alt+←</Kbd> and <Kbd>Alt+→</Kbd> to cycle through panels sequentially without memorizing numbers.</Callout>
+      <Callout>Changes to config.toml take effect on next launch. Theme changes via the Settings panel (<Kbd>t</Kbd>) apply immediately.</Callout>
     </>
   );
 }
@@ -593,55 +576,221 @@ function TerminalSection() {
   return (
     <>
       <p>
-        The Terminal tab runs a native PTY — it supports interactive tools like <InlineCode>vim</InlineCode>,{" "}
-        <InlineCode>npm init</InlineCode>, and <InlineCode>htop</InlineCode>, complex ANSI graphics, and full color spaces without lag.
+        The Terminal panel (<Kbd>F1</Kbd> / <Kbd>Alt+1</Kbd>) is Nori's primary interface — a native PTY that supports
+        interactive tools like <InlineCode>vim</InlineCode>, <InlineCode>htop</InlineCode>, <InlineCode>npm init</InlineCode>,
+        complex ANSI graphics, and full true-color rendering without lag.
       </p>
+      <h3 className="text-[16px] font-medium text-white/90 mt-8 mb-3">PTY Architecture</h3>
       <p>
-        Nori introduces <span className="text-foreground font-medium">/slash commands</span> that intercept shell input
-        to execute native UI functions directly:
+        Nori spawns a real pseudo-terminal via <InlineCode>portable-pty</InlineCode>, then streams output asynchronously
+        using background threads and <InlineCode>mpsc</InlineCode> channels. This means:
       </p>
-      <div className="not-prose space-y-3">
+      <Steps items={[
+        "Full interactive shell support — prompts, password inputs, and TUI apps work natively.",
+        "Async output streaming — long-running commands show output in real-time, not after completion.",
+        "Process isolation — Ctrl+C sends SIGINT to the child process, not to Nori itself.",
+        "Smart polling — 30fps during active output, 10fps idle. Near-zero CPU when nothing is happening.",
+      ]} />
+      <h3 className="text-[16px] font-medium text-white/90 mt-8 mb-3">Built-in Commands</h3>
+      <p>
+        Nori intercepts certain commands and handles them natively (without spawning a shell process) for instant response:
+      </p>
+      <div className="not-prose rounded-2xl border border-white/[0.05] bg-white/[0.015] overflow-hidden">
+        <div className="divide-y divide-white/[0.04]">
+          {[
+            { cmd: "ls / dir", desc: "Native directory listing with Nerd Font icons and per-file git status indicators" },
+            { cmd: "cat / type", desc: "Read and display file contents inline" },
+            { cmd: "pwd", desc: "Print current working directory" },
+            { cmd: "cd <path>", desc: "Change directory — updates git context and file tree automatically" },
+            { cmd: "mkdir / touch / rm / cp / mv", desc: "File operations handled natively for instant feedback" },
+            { cmd: "echo", desc: "Print text to terminal output" },
+            { cmd: "clear / cls", desc: "Clear terminal output buffer" },
+            { cmd: "help", desc: "Show all available commands and shortcuts" },
+            { cmd: "about", desc: "Display Nori version and info" },
+          ].map((item) => (
+            <div key={item.cmd} className="flex items-start gap-4 px-5 py-3">
+              <code className="font-mono text-[12px] text-white/70 whitespace-nowrap shrink-0">{item.cmd}</code>
+              <span className="text-[12.5px] text-white/40">{item.desc}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <p className="mt-4">
+        Any command not recognized as a built-in is passed to your system shell for execution.
+        External commands run in a background thread with real-time stdout/stderr streaming.
+      </p>
+    </>
+  );
+}
+
+function SlashCommandsSection() {
+  return (
+    <>
+      <p>
+        Slash commands are Nori's context-aware command interface. They provide structured access to Git and Docker
+        operations with intelligent argument mapping. Type <InlineCode>/help</InlineCode> to see all available commands.
+      </p>
+      <h3 className="text-[16px] font-medium text-white/90 mt-6 mb-3">Git Slash Commands</h3>
+      <div className="not-prose space-y-2">
         {[
-          { cmd: "/ssh <profile_name>", example: "/ssh production",          desc: "Connect to a saved remote server. Looks up the profile in ~/.nori/ssh_config and injects the ssh command into the active PTY. Typing /ssh alone lists all profiles." },
-          { cmd: "/git <args>",         example: '/git commit -m "fix: bug"', desc: "Context-aware wrapper for Git operations, executed in the active PTY." },
-          { cmd: "/docker <args>",      example: "/docker compose up -d",    desc: "Wrapper for Docker commands, executed in the active PTY." },
+          { cmd: "/git status", maps: "gst", desc: "Repository summary — branch, ahead/behind, changed files" },
+          { cmd: "/git log [n]", maps: "glog", desc: "Compact commit history (default: last 12 commits)" },
+          { cmd: "/git branches", maps: "gbr", desc: "All local and remote branches with verbose info" },
+          { cmd: "/git diff [args]", maps: "gdiff", desc: "Diff stat or custom diff arguments" },
+          { cmd: "/git push", maps: "gps", desc: "Push current branch to remote" },
+          { cmd: "/git pull", maps: "gpl", desc: "Pull with fast-forward only" },
+          { cmd: "/git add <path>", maps: "ga", desc: "Stage files for commit" },
+          { cmd: "/git commit <msg>", maps: "git commit -m", desc: "Commit with inline message" },
+          { cmd: "/git checkout <ref>", maps: "gco", desc: "Switch branch or checkout commit" },
+          { cmd: "/git stash", maps: "gstash", desc: "Stash current changes" },
+          { cmd: "/git stash-pop", maps: "gpop", desc: "Pop most recent stash" },
+          { cmd: "/git fetch", maps: "git fetch --all --prune", desc: "Fetch all remotes and prune" },
         ].map((item) => (
-          <div key={item.cmd} className="rounded-xl border hairline bg-surface/20 overflow-hidden">
-            <div className="flex items-center gap-3 px-4 py-2.5 border-b hairline bg-surface/40">
-              <span className="size-1.5 rounded-full bg-jade/70" />
-              <code className="font-mono text-[12.5px] text-jade">{item.cmd}</code>
-            </div>
-            <div className="px-4 py-3 space-y-1.5">
-              <p className="text-[13px] text-muted-foreground leading-relaxed">{item.desc}</p>
-              <p className="font-mono text-[11px] text-muted-foreground/50"><span className="text-jade/50">eg. </span>{item.example}</p>
-            </div>
+          <div key={item.cmd} className="flex items-center gap-3 rounded-xl border border-white/[0.04] bg-white/[0.01] px-4 py-2.5">
+            <code className="font-mono text-[12px] text-white/70 shrink-0 min-w-[180px]">{item.cmd}</code>
+            <span className="text-[11px] text-white/25">→</span>
+            <code className="font-mono text-[11px] text-emerald-400/50 shrink-0">{item.maps}</code>
+            <span className="text-[12px] text-white/35 ml-auto hidden sm:inline">{item.desc}</span>
           </div>
         ))}
+      </div>
+      <h3 className="text-[16px] font-medium text-white/90 mt-8 mb-3">Docker Slash Commands</h3>
+      <div className="not-prose space-y-2">
+        {[
+          { cmd: "/docker ps", maps: "dstat", desc: "Container status (compose-aware)" },
+          { cmd: "/docker images", maps: "dimg", desc: "Local Docker images" },
+          { cmd: "/docker up", maps: "dup", desc: "docker compose up -d" },
+          { cmd: "/docker down", maps: "ddown", desc: "docker compose down" },
+          { cmd: "/docker build", maps: "dbuild", desc: "docker compose build" },
+          { cmd: "/docker restart", maps: "drestart", desc: "docker compose restart" },
+          { cmd: "/docker logs <id>", maps: "dlogs", desc: "Tail last 200 lines of container logs" },
+          { cmd: "/docker start <id>", maps: "dstart", desc: "Start a stopped container" },
+          { cmd: "/docker stop <id>", maps: "dstop", desc: "Stop a running container" },
+          { cmd: "/docker shell <id>", maps: "dshell", desc: "Exec into container with /bin/sh" },
+        ].map((item) => (
+          <div key={item.cmd} className="flex items-center gap-3 rounded-xl border border-white/[0.04] bg-white/[0.01] px-4 py-2.5">
+            <code className="font-mono text-[12px] text-white/70 shrink-0 min-w-[180px]">{item.cmd}</code>
+            <span className="text-[11px] text-white/25">→</span>
+            <code className="font-mono text-[11px] text-emerald-400/50 shrink-0">{item.maps}</code>
+            <span className="text-[12px] text-white/35 ml-auto hidden sm:inline">{item.desc}</span>
+          </div>
+        ))}
+      </div>
+      <h3 className="text-[16px] font-medium text-white/90 mt-8 mb-3">Input Modes</h3>
+      <p>
+        Typing <InlineCode>/git</InlineCode> alone enters <span className="text-white/80 font-medium">Git mode</span> — all subsequent
+        commands are automatically prefixed with <InlineCode>/git</InlineCode>. Same for <InlineCode>/docker</InlineCode>.
+        The prompt marker changes to indicate the active mode. Type <InlineCode>exit</InlineCode> to return to normal mode.
+      </p>
+    </>
+  );
+}
+
+function GitAliasesSection() {
+  return (
+    <>
+      <p>
+        Beyond slash commands, Nori provides short aliases that map directly to Git operations.
+        These work like shell aliases but are handled natively for formatted, colorized output.
+      </p>
+      <div className="not-prose rounded-2xl border border-white/[0.05] bg-white/[0.015] overflow-hidden">
+        <div className="px-5 py-3 border-b border-white/[0.04] bg-white/[0.02]">
+          <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-white/30">Git Aliases</p>
+        </div>
+        <div className="divide-y divide-white/[0.04]">
+          {[
+            { alias: "gst", expands: "git status --short --branch", desc: "Formatted status with branch info" },
+            { alias: "glog", expands: "git log --oneline --decorate --graph -n 12", desc: "Compact graph log" },
+            { alias: "gbr", expands: "git branch --all --verbose", desc: "All branches with details" },
+            { alias: "gdiff", expands: "git diff --stat", desc: "Diff statistics" },
+            { alias: "gco <ref>", expands: "git checkout <ref>", desc: "Switch branch/commit" },
+            { alias: "ga <path>", expands: "git add <path>", desc: "Stage files" },
+            { alias: "gcm <msg>", expands: "git commit -m <msg>", desc: "Commit with message" },
+            { alias: "gpl", expands: "git pull --ff-only", desc: "Pull (fast-forward)" },
+            { alias: "gps", expands: "git push", desc: "Push to remote" },
+            { alias: "gstash", expands: "git stash", desc: "Stash changes" },
+            { alias: "gpop", expands: "git stash pop", desc: "Pop stash" },
+          ].map((item) => (
+            <div key={item.alias} className="grid grid-cols-[100px_1fr_auto] items-center gap-4 px-5 py-2.5">
+              <code className="font-mono text-[12px] text-emerald-400/60 font-medium">{item.alias}</code>
+              <code className="font-mono text-[11px] text-white/35 truncate">{item.expands}</code>
+              <span className="text-[11.5px] text-white/30 hidden md:inline">{item.desc}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <h3 className="text-[16px] font-medium text-white/90 mt-8 mb-3">Docker Aliases</h3>
+      <div className="not-prose rounded-2xl border border-white/[0.05] bg-white/[0.015] overflow-hidden">
+        <div className="divide-y divide-white/[0.04]">
+          {[
+            { alias: "dps / dstat", expands: "docker ps -a (formatted)", desc: "Container status table" },
+            { alias: "dimg", expands: "docker images (formatted)", desc: "Image list" },
+            { alias: "dup", expands: "docker compose up -d", desc: "Start services" },
+            { alias: "ddown", expands: "docker compose down", desc: "Stop services" },
+            { alias: "dbuild", expands: "docker compose build", desc: "Build images" },
+            { alias: "drestart", expands: "docker compose restart", desc: "Restart services" },
+            { alias: "dlogs <id>", expands: "docker logs --tail 200 <id>", desc: "View logs" },
+            { alias: "dshell <id>", expands: "docker exec -it <id> /bin/sh", desc: "Shell into container" },
+            { alias: "dstart <id>", expands: "docker start <id>", desc: "Start container" },
+            { alias: "dstop <id>", expands: "docker stop <id>", desc: "Stop container" },
+          ].map((item) => (
+            <div key={item.alias} className="grid grid-cols-[120px_1fr_auto] items-center gap-4 px-5 py-2.5">
+              <code className="font-mono text-[12px] text-emerald-400/60 font-medium">{item.alias}</code>
+              <code className="font-mono text-[11px] text-white/35 truncate">{item.expands}</code>
+              <span className="text-[11.5px] text-white/30 hidden md:inline">{item.desc}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </>
   );
 }
 
-function GitSection() {
+function GitPanelSection() {
   return (
     <>
       <p>
-        Press <Kbd>Alt+2</Kbd> or <Kbd>F2</Kbd> to open the Git panel. View your working tree, branch status,
-        and repository health at a glance — no more running <InlineCode>git status</InlineCode> manually.
+        The Git Workspace panel (<Kbd>F2</Kbd> / <Kbd>Alt+2</Kbd>) is a full interactive Git interface.
+        It shows your working tree, lets you stage/unstage files, view inline diffs, manage branches,
+        browse commit history, and handle stashes — all without typing a single git command.
       </p>
-      <p>Trigger Git quick-actions from anywhere in Nori:</p>
-      <div className="not-prose grid sm:grid-cols-2 gap-3">
+      <h3 className="text-[16px] font-medium text-white/90 mt-6 mb-3">Views</h3>
+      <p>The Git panel has multiple sub-views you can switch between:</p>
+      <div className="not-prose grid sm:grid-cols-2 gap-3 mt-3">
         {[
-          { key: "Alt+g", action: "Runs git status in the terminal" },
-          { key: "Alt+b", action: "Runs git branch in the terminal" },
-        ].map((item) => (
-          <div key={item.key} className="flex items-center gap-3 rounded-lg border hairline bg-surface/20 px-4 py-3">
-            <Kbd>{item.key}</Kbd>
-            <span className="text-[13px] text-muted-foreground">{item.action}</span>
+          { title: "Files", desc: "Changed/staged/untracked files with XY status codes. Stage, unstage, or discard per-file." },
+          { title: "Diff", desc: "Inline unified diff (unstaged + staged) for the selected file. Scrollable with j/k." },
+          { title: "Branches", desc: "All local and remote branches. Switch branches directly from the panel." },
+          { title: "Commit", desc: "Type a commit message and commit staged changes without leaving the panel." },
+          { title: "Log", desc: "Recent commit history with SHA and summary. Scrollable." },
+          { title: "Stash", desc: "View and manage stash entries." },
+        ].map((v) => (
+          <div key={v.title} className="rounded-xl border border-white/[0.04] bg-white/[0.01] p-4">
+            <p className="text-[13px] font-medium text-white/80 mb-1">{v.title}</p>
+            <p className="text-[12px] text-white/40 leading-relaxed">{v.desc}</p>
           </div>
         ))}
       </div>
-      <Callout>The Git panel shows live working tree status — dirty files, ahead/behind counts, and current branch — without any commands.</Callout>
+      <h3 className="text-[16px] font-medium text-white/90 mt-8 mb-3">File View Keybindings</h3>
+      <div className="not-prose space-y-3">
+        <KeyTable title="Navigation & Actions" rows={[
+          ["j / ↓", "Move selection down"],
+          ["k / ↑", "Move selection up"],
+          ["Enter", "Open inline diff for selected file"],
+          ["s", "Stage the selected file (git add)"],
+          ["u", "Unstage the selected file (git reset)"],
+          ["d", "Discard changes in selected file (git checkout --)"],
+          ["c", "Open commit message input"],
+          ["b", "Switch to branch list view"],
+          ["l", "Switch to commit log view"],
+          ["r", "Refresh file list"],
+          ["Tab", "Cycle between sub-views"],
+        ]} />
+      </div>
+      <Callout>
+        The Git panel auto-refreshes every ~2 seconds. After any git action (stage, commit, checkout),
+        it immediately re-fetches status so you always see the current state.
+      </Callout>
     </>
   );
 }
@@ -650,28 +799,46 @@ function DockerSection() {
   return (
     <>
       <p>
-        Navigate to the Docker tab (<Kbd>Alt+3</Kbd>) to view all containers in real-time.
-        Nori connects directly to your local Docker daemon — no more typing <InlineCode>docker ps</InlineCode>.
+        The Docker panel (<Kbd>F3</Kbd> / <Kbd>Alt+3</Kbd>) connects to your local Docker daemon and displays
+        all containers in real-time. Nori is <span className="text-white/80 font-medium">compose-aware</span> — if a{" "}
+        <InlineCode>docker-compose.yml</InlineCode> or <InlineCode>compose.yaml</InlineCode> exists in your working directory,
+        it uses <InlineCode>docker compose ps</InlineCode> for richer output.
       </p>
-      <Steps items={[
-        "Press j / k (or Up / Down) to select a container.",
-        "Press s to Stop the selected container.",
-        "Press u to Start the selected container.",
-        "Press r to Restart the selected container.",
-      ]} />
-      <p>Global quick-actions available from any panel:</p>
+      <h3 className="text-[16px] font-medium text-white/90 mt-6 mb-3">Container Management</h3>
+      <p>Navigate containers with keyboard shortcuts:</p>
+      <div className="not-prose space-y-3">
+        <KeyTable title="Docker Panel" rows={[
+          ["j / ↓", "Select next container"],
+          ["k / ↑", "Select previous container"],
+          ["s", "Stop selected container"],
+          ["u", "Start selected container"],
+          ["r", "Restart selected container"],
+        ]} />
+      </div>
+      <h3 className="text-[16px] font-medium text-white/90 mt-8 mb-3">Global Docker Shortcuts</h3>
+      <p>These work from any panel — no need to switch to the Docker tab first:</p>
       <div className="not-prose grid sm:grid-cols-3 gap-3">
         {[
-          { key: "Alt+d", action: "docker ps" },
-          { key: "Alt+u", action: "docker compose up -d" },
-          { key: "Alt+x", action: "docker compose down" },
+          { key: "Alt+D", action: "docker ps / compose ps" },
+          { key: "Alt+U", action: "docker compose up -d" },
+          { key: "Alt+X", action: "docker compose down" },
         ].map((item) => (
-          <div key={item.key} className="flex flex-col gap-2 rounded-lg border hairline bg-surface/20 px-4 py-3">
+          <div key={item.key} className="flex flex-col gap-2 rounded-xl border border-white/[0.04] bg-white/[0.01] px-4 py-3">
             <Kbd>{item.key}</Kbd>
-            <span className="text-[12px] text-muted-foreground font-mono">{item.action}</span>
+            <span className="text-[12px] text-white/40 font-mono">{item.action}</span>
           </div>
         ))}
       </div>
+      <h3 className="text-[16px] font-medium text-white/90 mt-8 mb-3">Compose Detection</h3>
+      <p>
+        Nori checks for these files in your working directory to determine compose mode:
+      </p>
+      <div className="not-prose flex flex-wrap gap-2 mt-2">
+        {["docker-compose.yml", "docker-compose.yaml", "compose.yml", "compose.yaml"].map((f) => (
+          <code key={f} className="font-mono text-[11.5px] text-white/60 border border-white/[0.06] bg-white/[0.02] rounded-lg px-3 py-1.5">{f}</code>
+        ))}
+      </div>
+      <Callout>Docker status refreshes every 3 seconds automatically. The sidebar icon shows running/total container count.</Callout>
     </>
   );
 }
@@ -680,61 +847,26 @@ function FilesSection() {
   return (
     <>
       <p>
-        Press <Kbd>Alt+4</Kbd> or <Kbd>F4</Kbd> to open the Files tab — a split-pane view for browsing
-        and previewing without leaving Nori.
+        The File Explorer (<Kbd>F4</Kbd> / <Kbd>Alt+4</Kbd>) provides a collapsible directory tree of your
+        current working directory with per-file Git status indicators and Nerd Font icons.
       </p>
-      <div className="not-prose grid sm:grid-cols-2 gap-3">
-        {[
-          { title: "Left pane",  body: "Navigable directory tree of your current working directory." },
-          { title: "Right pane", body: "Interactive file inspector — preview contents directly in the UI." },
-        ].map((p) => (
-          <div key={p.title} className="rounded-xl border hairline bg-surface/20 p-5">
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-jade mb-2">{p.title}</p>
-            <p className="text-[13px] text-muted-foreground leading-relaxed">{p.body}</p>
-          </div>
-        ))}
-      </div>
+      <h3 className="text-[16px] font-medium text-white/90 mt-6 mb-3">Features</h3>
       <Steps items={[
-        "Use Up / Down to scroll through files.",
-        "Press Enter or Space to expand folders or preview file contents.",
-        "No need to open vim or nano — preview happens inline.",
+        "Collapsible directory tree — expand/collapse folders with Enter or Space.",
+        "Per-file Git status — modified (~), staged (+), untracked (?), conflicted (!) indicators.",
+        "Nerd Font file-type icons — different icons for .rs, .ts, .json, directories, etc.",
+        "Keyboard navigation — j/k or Up/Down to move, Enter/Space to toggle.",
+        "Mouse support — click on directories to expand/collapse.",
+        "Auto-refresh — file tree updates when git status changes or after commands.",
       ]} />
-    </>
-  );
-}
-
-function SshSection() {
-  return (
-    <>
-      <p>
-        Press <Kbd>Alt+6</Kbd> to open the visual SSH manager. Configurations are stored in{" "}
-        <InlineCode>~/.nori/ssh_config</InlineCode>.
-      </p>
-      <div className="not-prose grid sm:grid-cols-2 gap-3">
-        {[
-          { key: "n",         label: "New profile",    desc: "Open the editor form to create a profile." },
-          { key: "e",         label: "Edit profile",   desc: "Select a profile and press e to edit." },
-          { key: "d",         label: "Delete profile", desc: "Remove a profile (requires confirmation)." },
-          { key: "Enter / c", label: "Connect",        desc: "Launch the connection in your Terminal tab." },
-        ].map((item) => (
-          <div key={item.key} className="flex items-start gap-3 rounded-lg border hairline bg-surface/20 px-4 py-3">
-            <Kbd>{item.key}</Kbd>
-            <div>
-              <p className="text-[13px] font-medium text-foreground/90">{item.label}</p>
-              <p className="text-[12px] text-muted-foreground mt-0.5">{item.desc}</p>
-            </div>
-          </div>
-        ))}
+      <div className="not-prose space-y-3 mt-4">
+        <KeyTable title="File Explorer Keys" rows={[
+          ["j / ↓", "Move selection down"],
+          ["k / ↑", "Move selection up"],
+          ["Enter / Space", "Expand or collapse directory"],
+          ["Click", "Toggle directory (mouse)"],
+        ]} />
       </div>
-      <p>Profile form fields — navigate with <Kbd>Tab</Kbd> / <Kbd>Shift+Tab</Kbd>:</p>
-      <Steps items={[
-        "Profile Name — e.g. prod-server",
-        "Host / IP — e.g. 192.168.1.50",
-        "User — e.g. root",
-        "Port — defaults to 22",
-        "Identity File — optional path to your .pem or .pub key",
-      ]} />
-      <Callout>Press Enter to save, or Esc to cancel editing.</Callout>
     </>
   );
 }
@@ -743,54 +875,70 @@ function MonitorSection() {
   return (
     <>
       <p>
-        Press <Kbd>Alt+5</Kbd> or <Kbd>F5</Kbd> to open the Monitor tab — live CPU and RAM metrics
-        without leaving your workspace.
+        The System Monitor (<Kbd>F5</Kbd> / <Kbd>Alt+5</Kbd>) displays live CPU and RAM metrics
+        using the <InlineCode>sysinfo</InlineCode> crate. No external tools needed.
       </p>
-      <div className="not-prose grid sm:grid-cols-2 gap-3">
+      <div className="not-prose grid sm:grid-cols-2 gap-3 mt-4">
         {[
-          { label: "CPU usage", desc: "Live per-core utilization updated in real-time." },
-          { label: "RAM usage", desc: "Memory consumption across your running processes." },
+          { label: "CPU Usage", desc: "Global CPU utilization percentage, updated every 1.5 seconds. Shows real-time load." },
+          { label: "Memory Usage", desc: "Used / total RAM in human-readable format. Tracks your system's memory pressure." },
         ].map((m) => (
-          <div key={m.label} className="flex items-center gap-4 rounded-xl border hairline bg-surface/20 px-5 py-4">
-            <div className="size-8 rounded-full bg-jade/10 border border-jade/20 grid place-items-center shrink-0">
-              <Monitor className="size-3.5 text-jade" />
+          <div key={m.label} className="flex items-start gap-4 rounded-2xl border border-white/[0.04] bg-white/[0.01] px-5 py-4">
+            <div className="size-9 rounded-xl bg-white/[0.03] border border-white/[0.06] grid place-items-center shrink-0 mt-0.5">
+              <Cpu className="size-4 text-emerald-400/50" />
             </div>
             <div>
-              <p className="text-[13px] font-medium text-foreground/90">{m.label}</p>
-              <p className="text-[12px] text-muted-foreground mt-0.5">{m.desc}</p>
+              <p className="text-[13px] font-medium text-white/80">{m.label}</p>
+              <p className="text-[12px] text-white/40 mt-1 leading-relaxed">{m.desc}</p>
             </div>
           </div>
         ))}
       </div>
+      <Callout>System metrics refresh every ~1.5 seconds (90 ticks). CPU usage is global across all cores.</Callout>
     </>
   );
 }
 
-function ThemesSection() {
+function PanelsSection() {
   return (
     <>
       <p>
-        Go to Settings (<Kbd>Alt+7</Kbd>) and press <Kbd>t</Kbd> to cycle through built-in themes instantly.
-        The UI redraws immediately with new color tokens.
+        Nori organizes its workspace into 6 dedicated panels. Switch between them instantly using
+        function keys or Alt+Number shortcuts. The active panel is highlighted in the sidebar.
       </p>
-      <div className="not-prose grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {[
-          { name: "jade",    desc: "Default — green/teal",  dot: "#4ade80" },
-          { name: "ocean",   desc: "Deep sea blues",         dot: "#38bdf8" },
-          { name: "dracula", desc: "Vibrant pink/purple",    dot: "#f472b6" },
-          { name: "nord",    desc: "Arctic bluish-gray",     dot: "#93c5fd" },
-          { name: "gruvbox", desc: "Warm retro groove",      dot: "#fbbf24" },
-        ].map((theme) => (
-          <div key={theme.name} className="flex items-center gap-3 rounded-lg border hairline bg-surface/20 px-4 py-3 hover:border-foreground/15 transition-colors">
-            <span className="size-3 rounded-full shrink-0" style={{ backgroundColor: theme.dot, boxShadow: `0 0 8px ${theme.dot}60` }} />
-            <div>
-              <p className="font-mono text-[12px] text-foreground/90">{theme.name}</p>
-              <p className="text-[11.5px] text-muted-foreground mt-0.5">{theme.desc}</p>
-            </div>
-          </div>
-        ))}
+      <div className="not-prose overflow-x-auto rounded-2xl border border-white/[0.05] bg-white/[0.015]">
+        <table className="w-full text-[13px]">
+          <thead>
+            <tr className="border-b border-white/[0.04] bg-white/[0.02]">
+              <th className="text-left px-5 py-3 font-mono text-[9px] uppercase tracking-[0.2em] text-white/25">Panel</th>
+              <th className="text-left px-5 py-3 font-mono text-[9px] uppercase tracking-[0.2em] text-white/25">Primary</th>
+              <th className="text-left px-5 py-3 font-mono text-[9px] uppercase tracking-[0.2em] text-white/25">Alt</th>
+              <th className="text-left px-5 py-3 font-mono text-[9px] uppercase tracking-[0.2em] text-white/25">Description</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-white/[0.04]">
+            {[
+              ["Terminal", "F1", "Alt+1 / Ctrl+1", "Primary PTY shell with async streaming"],
+              ["Git", "F2", "Alt+2 / Ctrl+2", "Interactive workspace — files, diffs, branches, commits"],
+              ["Docker", "F3", "Alt+3 / Ctrl+3", "Container management with compose detection"],
+              ["Files", "F4", "Alt+4 / Ctrl+4", "Collapsible directory tree with git status"],
+              ["Monitor", "F5", "Alt+5 / Ctrl+5", "Live CPU and RAM metrics"],
+              ["Settings", "F6", "Alt+6 / Ctrl+6", "Theme switching, UI toggles, preferences"],
+            ].map(([panel, primary, alt, desc]) => (
+              <tr key={panel} className="hover:bg-white/[0.01] transition-colors">
+                <td className="px-5 py-3 font-medium text-white/80 whitespace-nowrap">{panel}</td>
+                <td className="px-5 py-3 whitespace-nowrap"><Kbd>{primary}</Kbd></td>
+                <td className="px-5 py-3 whitespace-nowrap text-[12px] text-white/40 font-mono">{alt}</td>
+                <td className="px-5 py-3 text-white/40">{desc}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-      <p>Press <Kbd>r</Kbd> in Settings to toggle the Git repository header — hiding it gives more vertical space for terminal output.</p>
+      <Callout>
+        F-keys are preferred on Windows because Windows Terminal captures Ctrl+Number for its own tab switching.
+        Alt+Number works in most terminal emulators.
+      </Callout>
     </>
   );
 }
@@ -799,25 +947,153 @@ function KeybindingsSection() {
   return (
     <>
       <p>Complete keyboard reference for Nori. Everything is reachable without a mouse.</p>
-      <div className="not-prose space-y-5">
-        <KeyTable title="Global navigation" rows={[
-          ["Alt+1 … Alt+7", "Jump directly to a specific panel"],
-          ["F1 … F7",       "Alternative panel jumping"],
-          ["Alt+← / Alt+→", "Cycle through panels sequentially"],
+      <div className="not-prose space-y-6">
+        <KeyTable title="Panel Switching" rows={[
+          ["F1 … F6", "Jump directly to a specific panel"],
+          ["Alt+1 … Alt+6", "Alternative panel switching"],
+          ["Ctrl+1 … Ctrl+6", "Fallback (when not intercepted by terminal emulator)"],
         ]} />
-        <KeyTable title="Terminal & process control" rows={[
-          ["Ctrl+L",      "Clear the output screen"],
-          ["Ctrl+C",      "Send interrupt / SIGINT to active process"],
-          ["Ctrl+D",      "Exit Nori safely"],
-          ["PgUp / PgDn", "Scroll through terminal output buffer"],
-          ["↑ / ↓",       "Cycle through shell command history"],
+        <KeyTable title="Terminal Input" rows={[
+          ["Enter", "Submit command"],
+          ["↑ / ↓", "Navigate command history"],
+          ["← / →", "Move cursor within input"],
+          ["Home", "Jump to start of input"],
+          ["End", "Jump to end of input + re-pin scroll to bottom"],
+          ["Ctrl+A", "Jump to start of line (or select all output if input empty)"],
+          ["Ctrl+E", "Jump to end of line"],
+          ["Ctrl+W", "Delete word before cursor"],
+          ["Ctrl+U", "Delete from cursor to line start"],
+          ["Ctrl+K", "Delete from cursor to line end"],
+          ["Ctrl+Left", "Jump to previous word boundary"],
+          ["Ctrl+Right", "Jump to next word boundary"],
+          ["Ctrl+Backspace", "Delete word before cursor"],
+          ["Delete", "Forward-delete character at cursor"],
+          ["Esc", "Clear selection, or clear input if no selection"],
         ]} />
-        <KeyTable title="Quick-action binds (anywhere)" rows={[
-          ["Alt+g", "Runs git status"],
-          ["Alt+b", "Runs git branch"],
-          ["Alt+d", "Runs docker ps"],
-          ["Alt+u", "Runs docker compose up -d"],
-          ["Alt+x", "Runs docker compose down"],
+        <KeyTable title="Process Control" rows={[
+          ["Ctrl+C", "Copy selection (if active), clear input, or interrupt running process"],
+          ["Ctrl+L", "Clear terminal output"],
+          ["Ctrl+D", "Exit Nori (when input is empty)"],
+        ]} />
+        <KeyTable title="Scrolling" rows={[
+          ["PageUp", "Scroll terminal output up (8 lines)"],
+          ["PageDown", "Scroll terminal output down (8 lines)"],
+          ["Mouse Scroll", "Scroll output (3 lines per tick)"],
+          ["End", "Re-pin to bottom (auto-follow new output)"],
+        ]} />
+        <KeyTable title="Global Quick Actions (from any panel)" rows={[
+          ["Alt+G", "git status (gst)"],
+          ["Alt+B", "git branches (gbr)"],
+          ["Alt+L", "git log (glog)"],
+          ["Alt+P", "git push (gps)"],
+          ["Alt+O", "git pull (gpl)"],
+          ["Alt+D", "docker status (dstat)"],
+          ["Alt+U", "docker compose up -d (dup)"],
+          ["Alt+X", "docker compose down (ddown)"],
+        ]} />
+        <KeyTable title="Settings Panel" rows={[
+          ["t", "Cycle through themes"],
+          ["r", "Toggle repository header visibility"],
+          ["j / ↓", "Scroll settings down"],
+          ["k / ↑", "Scroll settings up"],
+        ]} />
+      </div>
+    </>
+  );
+}
+
+function MouseSection() {
+  return (
+    <>
+      <p>
+        While Nori is keyboard-first, it fully supports mouse interaction for navigation, text selection, and URL opening.
+      </p>
+      <h3 className="text-[16px] font-medium text-white/90 mt-6 mb-3">Mouse Actions</h3>
+      <div className="not-prose space-y-3">
+        <KeyTable title="Terminal Panel" rows={[
+          ["Left Click + Drag", "Select text in terminal output"],
+          ["Release", "Finalize selection (stays highlighted until Esc)"],
+          ["Ctrl+Click", "Open URL under cursor in default browser"],
+          ["Scroll Up/Down", "Scroll terminal output history"],
+        ]} />
+        <KeyTable title="Sidebar" rows={[
+          ["Click (column < 8)", "Switch to clicked panel tab"],
+        ]} />
+        <KeyTable title="File Explorer" rows={[
+          ["Click on directory", "Expand or collapse the directory"],
+          ["Scroll", "Scroll the file tree"],
+        ]} />
+      </div>
+      <h3 className="text-[16px] font-medium text-white/90 mt-8 mb-3">Text Selection & Clipboard</h3>
+      <p>
+        Selected text is highlighted in the terminal viewport. Press <Kbd>Ctrl+C</Kbd> while a selection is active
+        to copy it to the system clipboard (via <InlineCode>arboard</InlineCode>). Press <Kbd>Esc</Kbd> to clear the selection.
+      </p>
+      <p>
+        <Kbd>Ctrl+A</Kbd> with an empty input selects all visible terminal output for quick copying.
+      </p>
+    </>
+  );
+}
+
+function HistorySection() {
+  return (
+    <>
+      <p>
+        Nori maintains a persistent command history that survives restarts. History is stored in{" "}
+        <InlineCode>~/.nori/history</InlineCode> and loaded on startup.
+      </p>
+      <h3 className="text-[16px] font-medium text-white/90 mt-6 mb-3">Navigation</h3>
+      <div className="not-prose space-y-3">
+        <KeyTable title="History Keys" rows={[
+          ["↑", "Show previous history item"],
+          ["↓", "Show next history item (or clear input at end)"],
+        ]} />
+      </div>
+      <h3 className="text-[16px] font-medium text-white/90 mt-8 mb-3">Behavior</h3>
+      <Steps items={[
+        "Every submitted command is added to history (duplicates allowed for recency).",
+        "History is saved to disk on clean exit (Ctrl+D or 'exit' command).",
+        "Navigating history replaces the current input — cursor moves to end.",
+        "Typing any character resets the history index (you're back to composing a new command).",
+        "Empty submissions are not added to history.",
+      ]} />
+    </>
+  );
+}
+
+function ThemesSection() {
+  return (
+    <>
+      <p>
+        Navigate to Settings (<Kbd>F6</Kbd>) and press <Kbd>t</Kbd> to cycle through built-in themes.
+        The UI redraws immediately with new color tokens. Your selection is persisted to{" "}
+        <InlineCode>~/.nori/config.toml</InlineCode>.
+      </p>
+      <div className="not-prose grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">
+        {[
+          { name: "jade", desc: "Default — emerald green accents", dot: "#10b981" },
+          { name: "ocean", desc: "Deep sea blues and cyans", dot: "#38bdf8" },
+          { name: "dracula", desc: "Vibrant pink and purple", dot: "#f472b6" },
+          { name: "nord", desc: "Arctic bluish-gray palette", dot: "#93c5fd" },
+          { name: "gruvbox", desc: "Warm retro amber tones", dot: "#fbbf24" },
+        ].map((theme) => (
+          <div key={theme.name} className="flex items-center gap-3 rounded-xl border border-white/[0.04] bg-white/[0.01] px-4 py-3.5 hover:border-white/[0.1] transition-colors group">
+            <span className="size-3.5 rounded-full shrink-0 ring-2 ring-white/5 group-hover:ring-white/10 transition-all" style={{ backgroundColor: theme.dot, boxShadow: `0 0 12px ${theme.dot}40` }} />
+            <div>
+              <p className="font-mono text-[12.5px] text-white/80">{theme.name}</p>
+              <p className="text-[11px] text-white/35 mt-0.5">{theme.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <h3 className="text-[16px] font-medium text-white/90 mt-8 mb-3">Settings Panel Options</h3>
+      <div className="not-prose space-y-3">
+        <KeyTable title="Settings Keys" rows={[
+          ["t", "Cycle to next theme"],
+          ["r", "Toggle Git repository header bar"],
+          ["j / ↓", "Scroll settings panel down"],
+          ["k / ↑", "Scroll settings panel up"],
         ]} />
       </div>
     </>
@@ -828,16 +1104,99 @@ function ShellIntSection() {
   return (
     <>
       <p>
-        Shell integration enables per-command timing, exit status badges, and jump-to-block navigation.
-        Added automatically for zsh, bash, and fish. To enable manually:
+        Nori auto-detects your system shell on startup. On Windows it uses <InlineCode>cmd.exe</InlineCode> or{" "}
+        <InlineCode>pwsh</InlineCode> (from COMSPEC). On Unix it reads <InlineCode>$SHELL</InlineCode>.
+        You can override this in config:
       </p>
-      <Code label="~/.zshrc" lang="zsh">{`[[ -f "$HOME/.nori/shell/integration.zsh" ]] && \\
-  source "$HOME/.nori/shell/integration.zsh"`}</Code>
-      <Code label="~/.bashrc" lang="bash">{`[[ -f "$HOME/.nori/shell/integration.bash" ]] && \\
-  source "$HOME/.nori/shell/integration.bash"`}</Code>
-      <Code label="~/.config/fish/config.fish" lang="fish">{`if test -f $HOME/.nori/shell/integration.fish
-  source $HOME/.nori/shell/integration.fish
-end`}</Code>
+      <Code label="~/.nori/config.toml" lang="toml">{`# Force a specific shell
+shell = "pwsh"
+# shell = "/bin/zsh"
+# shell = "/usr/bin/fish"`}</Code>
+      <h3 className="text-[16px] font-medium text-white/90 mt-8 mb-3">How Commands Execute</h3>
+      <p>When you submit a command in Nori, it follows this pipeline:</p>
+      <Steps items={[
+        "Input is trimmed and checked against built-in commands (ls, cd, cat, etc.).",
+        "If it starts with /, it's normalized as a slash command (/git status → gst).",
+        "If in Git/Docker mode, the mode prefix is prepended automatically.",
+        "Built-in commands execute synchronously and return instantly.",
+        "External commands spawn a background thread with a real PTY process.",
+        "Output streams back via mpsc channels and renders in real-time.",
+        "On completion, git status and file tree auto-refresh.",
+      ]} />
+      <h3 className="text-[16px] font-medium text-white/90 mt-8 mb-3">Process Management</h3>
+      <p>
+        Only one command runs at a time. If you try to submit while a command is running,
+        Nori shows a system message: "a command is already running — wait for it to finish."
+        Use <Kbd>Ctrl+C</Kbd> to interrupt the running process.
+      </p>
+    </>
+  );
+}
+
+function ArchitectureSection() {
+  return (
+    <>
+      <p>
+        Nori is a single-binary TUI application built with Rust. Here's how the major systems fit together:
+      </p>
+      <Code label="Module structure" lang="text">{`nori/src/
+├── main.rs          # Entry point — TUI loop, event polling, render cycle
+├── state.rs         # AppState — all mutable application state
+├── input.rs         # Keyboard & mouse event handlers
+├── commands.rs      # Built-in command execution + alias expansion
+├── shell.rs         # External command spawning via PTY
+├── config.rs        # TOML config loading/writing
+├── history.rs       # Persistent command history
+├── nerd_font.rs     # Nerd Font glyph mapping for file icons
+├── font_setup.rs    # Windows font installation automation
+├── install_setup.rs # First-run setup wizard
+├── update_guard.rs  # Version check and update notifications
+├── basha/
+│   ├── mod.rs       # Process manager (kill_all on exit)
+│   ├── runtime.rs   # Async PTY streaming via portable-pty
+│   ├── session.rs   # Shell session management
+│   └── shell_session.rs
+├── git/
+│   ├── mod.rs       # Git status fetching, branch detection
+│   └── workspace.rs # Async git operations (diff, stage, branches, log)
+├── foldertree/
+│   └── mod.rs       # Recursive directory tree with expand/collapse
+├── ui/
+│   ├── app.rs       # Main render function (ratatui frame)
+│   ├── layout.rs    # Panel layout calculations
+│   └── mod.rs       # UI module exports
+└── prompts/
+    └── mod.rs       # Prompt styling and markers`}</Code>
+      <h3 className="text-[16px] font-medium text-white/90 mt-8 mb-3">Render Loop</h3>
+      <p>
+        Nori uses a smart render loop that minimizes CPU usage:
+      </p>
+      <Steps items={[
+        "Poll for events at 33ms intervals during active output (30fps), 100ms when idle.",
+        "Only redraw when state actually changes (new output, key press, git refresh).",
+        "Minimum 10fps guaranteed (every 6 ticks) to keep spinners and clocks fresh.",
+        "Force immediate redraw on any key press for responsive feel.",
+        "Full redraw on terminal resize events.",
+      ]} />
+      <h3 className="text-[16px] font-medium text-white/90 mt-8 mb-3">Async Architecture</h3>
+      <p>
+        Heavy I/O operations run on background threads and communicate via <InlineCode>mpsc</InlineCode> channels:
+      </p>
+      <div className="not-prose grid sm:grid-cols-2 gap-3 mt-3">
+        {[
+          { title: "Command execution", desc: "PTY process streams stdout/stderr back line-by-line" },
+          { title: "Git status", desc: "Refreshes every ~2s in background, result merged on next tick" },
+          { title: "Docker status", desc: "Polls every ~3s, updates container list asynchronously" },
+          { title: "File tree", desc: "Directory scan + git status per-file runs off main thread" },
+          { title: "Git workspace", desc: "Diffs, branch lists, logs fetched async with loading states" },
+          { title: "System metrics", desc: "CPU/RAM sampled every ~1.5s via sysinfo crate" },
+        ].map((item) => (
+          <div key={item.title} className="rounded-xl border border-white/[0.04] bg-white/[0.01] p-4">
+            <p className="text-[13px] font-medium text-white/70 mb-1">{item.title}</p>
+            <p className="text-[12px] text-white/35 leading-relaxed">{item.desc}</p>
+          </div>
+        ))}
+      </div>
     </>
   );
 }
@@ -845,17 +1204,34 @@ end`}</Code>
 function TroubleshootingSection() {
   return (
     <>
-      <Steps items={[
-        "Glyphs render as boxes — font isn't a Nerd Font; reselect under Settings → Appearance.",
-        "Slow first launch — first-run cache build is normal; later launches are sub-50ms.",
-        "Prompt feels off — verify shell integration is sourced (see Shell integration).",
-        "Docker panel empty — ensure Docker daemon is running before launching Nori.",
-        "SSH connection fails — check identity file path and host details in ~/.nori/ssh_config.",
-      ]} />
-      <p className="text-[13.5px] text-muted-foreground">
+      <p>Common issues and their solutions:</p>
+      <div className="not-prose space-y-4 mt-4">
+        {[
+          { issue: "Glyphs render as boxes or question marks", fix: "You don't have a Nerd Font installed. Download JetBrainsMono Nerd Font from the Fonts section and set it as your terminal font." },
+          { issue: "Slow first launch (several seconds)", fix: "Normal — first-run performs font installation (Windows) and cache building. All subsequent launches are sub-50ms." },
+          { issue: "Docker panel shows nothing", fix: "Ensure the Docker daemon is running before launching Nori. On Windows, start Docker Desktop first." },
+          { issue: "Git panel shows no files", fix: "Make sure you're in a Git repository (has a .git directory). The panel auto-loads on first switch." },
+          { issue: "Ctrl+C doesn't interrupt the process", fix: "Nori handles Ctrl+C internally. If a process is running, it sends SIGINT. If nothing is running, it clears input. If a selection is active, it copies to clipboard." },
+          { issue: "Alt shortcuts don't work", fix: "Some terminal emulators capture Alt keys. Try F1-F6 for panel switching instead. On Windows Terminal, Alt shortcuts should work by default." },
+          { issue: "Colors look wrong or washed out", fix: "Ensure your terminal supports true color (24-bit). Most modern terminals do. Try switching themes with 't' in Settings." },
+          { issue: "Command output appears all at once (not streaming)", fix: "This happens with commands that buffer their output. Most interactive commands stream correctly. Built-in commands (ls, cat) execute synchronously by design." },
+          { issue: "Can't exit Nori", fix: "Press Ctrl+D with empty input, or type 'exit'. Nori saves history and kills all child processes on exit." },
+          { issue: "Mouse selection doesn't work", fix: "Mouse capture must be enabled (it is by default). Some terminal multiplexers (tmux, screen) may intercept mouse events." },
+        ].map((item) => (
+          <div key={item.issue} className="rounded-2xl border border-white/[0.04] bg-white/[0.01] overflow-hidden">
+            <div className="px-5 py-3 border-b border-white/[0.04] bg-white/[0.02]">
+              <p className="text-[13px] font-medium text-white/80">{item.issue}</p>
+            </div>
+            <div className="px-5 py-3">
+              <p className="text-[12.5px] text-white/45 leading-relaxed">{item.fix}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="mt-6 text-[13.5px] text-white/40">
         Still stuck?{" "}
-        <Link to="/feedback" className="text-foreground underline underline-offset-2 decoration-foreground/30 hover:decoration-foreground transition-colors">
-          Send a note
+        <Link to="/feedback" className="text-white/70 underline underline-offset-2 decoration-white/20 hover:decoration-white/50 transition-colors">
+          Send us a note
         </Link>{" "}
         and we'll help you out.
       </p>
@@ -863,8 +1239,9 @@ function TroubleshootingSection() {
   );
 }
 
-/* ─── Shared primitives ──────────────────────────────────────────────────── */
-function Code({ label, lang, children, runtime, status }: { label: string; lang: string; children: string; runtime?: string; status?: "ok" | "error" }) {
+/* ─── Shared Primitives ──────────────────────────────────────────────────── */
+
+function Code({ label, lang, children }: { label: string; lang: string; children: string }) {
   const [copied, setCopied] = useState(false);
   const onCopy = async () => {
     await navigator.clipboard.writeText(children.trim());
@@ -875,43 +1252,32 @@ function Code({ label, lang, children, runtime, status }: { label: string; lang:
   const lines = children.trim().split("\n");
 
   return (
-    <div className="not-prose group/code rounded-xl border border-white/5 bg-[#050706] overflow-hidden font-mono text-[12.5px] transition-all duration-300 hover:border-jade/20 hover:shadow-[0_0_25px_rgba(110,231,183,0.03)]">
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/5 bg-white/[0.01]">
+    <div className="not-prose group/code rounded-2xl border border-white/[0.05] bg-[#070707] overflow-hidden font-mono text-[12.5px] transition-all duration-300 hover:border-white/[0.08]">
+      <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.04] bg-white/[0.015]">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5">
-            <span className="size-2 rounded-full bg-red-500/20 border border-red-500/35" />
-            <span className="size-2 rounded-full bg-yellow-500/20 border border-yellow-500/35" />
-            <span className="size-2 rounded-full bg-jade/25 border border-jade/40" />
+            <span className="size-2 rounded-full bg-white/[0.06]" />
+            <span className="size-2 rounded-full bg-white/[0.06]" />
+            <span className="size-2 rounded-full bg-white/[0.06]" />
           </div>
-          <span className="text-[10.5px] font-medium tracking-wide text-muted-foreground/60">{label}</span>
-          <span className="text-muted-foreground/20">·</span>
-          <span className="text-[10px] text-muted-foreground/40 uppercase tracking-wider">{lang}</span>
+          <span className="text-[11px] font-medium text-white/40">{label}</span>
+          <span className="text-white/10">·</span>
+          <span className="text-[10px] text-white/20 uppercase tracking-wider">{lang}</span>
         </div>
-        <div className="flex items-center gap-3">
-          {runtime && (
-            <div className="flex items-center gap-1.5 text-[10px] font-mono text-muted-foreground/60 mr-2">
-              <span className="flex items-center gap-1"><Clock className="size-3" />{runtime}</span>
-              {status === "ok" && <Check className="size-3 text-jade" />}
-            </div>
-          )}
-          <button
-            onClick={onCopy}
-            aria-label="Copy"
-            className="text-muted-foreground/50 hover:text-foreground transition-all duration-200 p-1 hover:bg-white/[0.04] rounded-md outline-none"
-          >
-            {copied ? <Check className="size-3.5 text-jade" /> : <Copy className="size-3.5" />}
-          </button>
-        </div>
+        <button onClick={onCopy} aria-label="Copy"
+          className="text-white/25 hover:text-white/70 transition-all p-1.5 hover:bg-white/[0.04] rounded-lg outline-none">
+          {copied ? <Check className="size-3.5 text-emerald-400/70" /> : <Copy className="size-3.5" />}
+        </button>
       </div>
-      <pre className="px-4 py-4 text-foreground/80 leading-[1.7] overflow-x-auto flex gap-4 select-text">
-        <div className="flex flex-col text-muted-foreground/25 select-none text-right w-5 shrink-0 border-r border-white/5 pr-3">
+      <pre className="px-5 py-4 text-white/70 leading-[1.75] overflow-x-auto flex gap-4 select-text">
+        <div className="flex flex-col text-white/15 select-none text-right w-5 shrink-0 border-r border-white/[0.04] pr-3">
           {lines.map((_, idx) => (
             <span key={idx}>{idx + 1}</span>
           ))}
         </div>
         <div className="flex-1 overflow-x-auto scrollbar-none">
           {lines.map((line, idx) => (
-            <div key={idx} className="hover:bg-white/[0.02] px-1 rounded transition-colors whitespace-pre">
+            <div key={idx} className="hover:bg-white/[0.015] px-1 rounded transition-colors whitespace-pre">
               {line || " "}
             </div>
           ))}
@@ -923,13 +1289,13 @@ function Code({ label, lang, children, runtime, status }: { label: string; lang:
 
 function Steps({ items }: { items: string[] }) {
   return (
-    <ol className="not-prose space-y-4">
+    <ol className="not-prose space-y-3">
       {items.map((it, i) => (
-        <li key={it} className="flex gap-4 items-start text-[13.5px] text-foreground/80 leading-relaxed group">
-          <span className="font-mono text-[10px] text-jade/60 bg-jade/5 border border-jade/15 rounded-md px-1.5 py-0.5 shrink-0 group-hover:bg-jade/10 group-hover:text-jade transition-colors">
+        <li key={i} className="flex gap-4 items-start text-[13.5px] text-white/60 leading-relaxed group">
+          <span className="font-mono text-[10px] text-emerald-400/40 bg-emerald-500/[0.06] border border-emerald-500/[0.1] rounded-lg px-2 py-0.5 shrink-0 mt-0.5">
             {String(i + 1).padStart(2, "0")}
           </span>
-          <span className="pt-0.5">{it}</span>
+          <span>{it}</span>
         </li>
       ))}
     </ol>
@@ -938,16 +1304,16 @@ function Steps({ items }: { items: string[] }) {
 
 function Callout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="not-prose flex gap-3.5 rounded-xl border border-jade/10 bg-jade/[0.02] px-5 py-4 shadow-[0_0_20px_rgba(110,231,183,0.015)]">
-      <span className="size-1.5 rounded-full bg-jade mt-2 shrink-0 shadow-[0_0_6px_var(--jade)]" />
-      <p className="text-[13px] text-foreground/80 leading-relaxed">{children}</p>
+    <div className="not-prose flex gap-4 rounded-2xl border border-emerald-500/[0.1] bg-emerald-500/[0.02] px-5 py-4">
+      <span className="size-2 rounded-full bg-emerald-400/50 mt-1.5 shrink-0" />
+      <p className="text-[13px] text-white/65 leading-relaxed">{children}</p>
     </div>
   );
 }
 
 function InlineCode({ children }: { children: React.ReactNode }) {
   return (
-    <code className="font-mono text-[12px] bg-white/[0.02] border border-white/5 px-1.5 py-0.5 rounded text-jade/95">
+    <code className="font-mono text-[12px] bg-white/[0.03] border border-white/[0.06] px-1.5 py-0.5 rounded-md text-white/75">
       {children}
     </code>
   );
@@ -955,7 +1321,7 @@ function InlineCode({ children }: { children: React.ReactNode }) {
 
 function Kbd({ children }: { children: React.ReactNode }) {
   return (
-    <kbd className="font-mono text-[10.5px] bg-white/[0.02] border border-white/10 shadow-[0_1.5px_0_rgba(255,255,255,0.08)] rounded px-1.5 py-0.5 text-foreground/75 whitespace-nowrap inline-flex items-center">
+    <kbd className="font-mono text-[10.5px] bg-white/[0.03] border border-white/[0.08] shadow-[0_1.5px_0_rgba(255,255,255,0.06)] rounded-md px-2 py-0.5 text-white/65 whitespace-nowrap inline-flex items-center">
       {children}
     </kbd>
   );
@@ -964,16 +1330,16 @@ function Kbd({ children }: { children: React.ReactNode }) {
 function KeyTable({ title, rows }: { title: string; rows: [string, string][] }) {
   return (
     <div>
-      <p className="font-mono text-[9px] uppercase tracking-[0.24em] text-muted-foreground/45 mb-2.5">{title}</p>
-      <div className="rounded-xl border border-white/5 overflow-hidden bg-white/[0.01]">
+      <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-white/20 mb-2.5">{title}</p>
+      <div className="rounded-2xl border border-white/[0.04] overflow-hidden bg-white/[0.01]">
         <table className="w-full text-[13px]">
-          <tbody className="divide-y divide-white/5">
+          <tbody className="divide-y divide-white/[0.03]">
             {rows.map(([key, action]) => (
-              <tr key={key} className="hover:bg-white/[0.01] transition-colors">
-                <td className="px-4 py-3 w-44 shrink-0">
-                  <kbd className="font-mono text-[10.5px] text-jade bg-jade/5 border border-jade/15 rounded px-2 py-1 whitespace-nowrap inline-block shadow-[0_1px_0_rgba(110,231,183,0.06)]">{key}</kbd>
+              <tr key={key} className="hover:bg-white/[0.015] transition-colors">
+                <td className="px-5 py-2.5 w-48 shrink-0">
+                  <kbd className="font-mono text-[10.5px] text-white/60 bg-white/[0.03] border border-white/[0.06] rounded-md px-2 py-1 whitespace-nowrap inline-block shadow-[0_1px_0_rgba(255,255,255,0.04)]">{key}</kbd>
                 </td>
-                <td className="px-4 py-3 text-muted-foreground/80">{action}</td>
+                <td className="px-5 py-2.5 text-white/40">{action}</td>
               </tr>
             ))}
           </tbody>

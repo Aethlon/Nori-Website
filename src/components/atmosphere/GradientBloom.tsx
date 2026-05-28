@@ -5,12 +5,16 @@ interface GradientBloomProps {
   opacity?: number;
 }
 
+const MAX_OPACITY = 0.15;
+
 export function GradientBloom({
   className = "",
-  color = "radial-gradient(circle, oklch(0.78 0.13 165 / 0.15) 0%, transparent 70%)",
+  color = "radial-gradient(circle, rgba(255, 255, 255, 0.06) 0%, transparent 70%)",
   size = "600px",
-  opacity = 0.8,
+  opacity = 0.12,
 }: GradientBloomProps) {
+  const clampedOpacity = Math.min(opacity, MAX_OPACITY);
+
   return (
     <div
       aria-hidden
@@ -19,7 +23,7 @@ export function GradientBloom({
         width: size,
         height: size,
         background: color,
-        opacity,
+        opacity: clampedOpacity,
       }}
     />
   );

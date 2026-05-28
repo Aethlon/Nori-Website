@@ -54,7 +54,7 @@ export function CursorAura() {
       aria-hidden
       className="pointer-events-none fixed z-0 size-[400px] rounded-full blur-[90px] mix-blend-screen"
       style={{
-        background: "radial-gradient(circle, oklch(0.78 0.13 165) 0%, oklch(0.7 0.2 200) 60%, transparent 100%)",
+        background: "radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 60%, transparent 100%)",
         top: 0,
         left: 0,
       }}
