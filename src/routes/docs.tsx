@@ -225,21 +225,22 @@ function DocsPage() {
                       {group.label}
                     </p>
                     <div className="space-y-0.5">
-                      {group.items.map((item) => {
+                      {group.items.map((item, idx) => {
                         const isActive = active === item.id;
                         const Icon = item.icon;
                         return (
                           <button key={item.id}
                             onClick={() => setActive(item.id)}
-                            className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] text-left transition-all duration-200 group relative ${
+                            style={{ animationDelay: `${idx * 30}ms` }}
+                            className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] text-left transition-all duration-200 group relative animate-slide-in-left ${
                               isActive
                                 ? "bg-white/[0.06] text-white border border-white/[0.08]"
-                                : "text-white/50 hover:text-white/80 hover:bg-white/[0.02] border border-transparent"
+                                : "text-white/50 hover:text-white/90 hover:bg-white/[0.03] border border-transparent hover:translate-x-0.5"
                             }`}>
                             {isActive && (
-                              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-emerald-400/70 rounded-r-full" />
+                              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-emerald-400/70 rounded-r-full animate-soft-glow" />
                             )}
-                            <Icon className={`size-4 shrink-0 transition-colors ${isActive ? "text-emerald-400/70" : "text-white/25 group-hover:text-white/40"}`} />
+                            <Icon className={`size-4 shrink-0 transition-colors ${isActive ? "text-emerald-400/70" : "text-white/25 group-hover:text-white/50"}`} />
                             <span className="flex-1 truncate">{item.label}</span>
                           </button>
                         );
@@ -392,35 +393,44 @@ function InstallSection() {
   return (
     <>
       <p>
-        Nori is built from source using the Rust toolchain. Ensure you have{" "}
-        <a href="https://rustup.rs/" target="_blank" rel="noreferrer" className="text-white/80 underline underline-offset-2 decoration-white/20 hover:decoration-white/50 transition-colors">
-          rustup
-        </a>{" "}
-        installed (Rust 1.75+).
+        Nori ships as native installers for Windows, macOS, and Linux. Pick the one for your platform — no Rust toolchain or build steps required.
       </p>
-      <Code label="Install" lang="bash">{`# Download the latest release from:
-# https://github.com/Aethlon/Nori/releases
-
-# Windows: Run the .exe installer
-# macOS: Open the .dmg (coming soon)
-# Linux: Run the .AppImage or install .deb (coming soon)`}</Code>
+      <div className="not-prose grid sm:grid-cols-3 gap-3">
+        {[
+          { os: "Windows", file: ".exe / .msi", url: "https://github.com/Aethlon/Nori/releases/latest/download/nori_0.1.0_x64-setup.exe", note: "Windows 10+ x64" },
+          { os: "macOS", file: ".dmg (Universal)", url: "https://github.com/Aethlon/Nori/releases/latest/download/nori_0.1.0_universal.dmg", note: "10.15+ Intel & Apple Silicon" },
+          { os: "Linux", file: ".AppImage / .deb", url: "https://github.com/Aethlon/Nori/releases/latest/download/nori_0.1.0_amd64.AppImage", note: "x86_64" },
+        ].map((p) => (
+          <a key={p.os} href={p.url}
+            className="group relative rounded-2xl border border-white/[0.05] bg-white/[0.015] p-5 hover:border-white/[0.1] hover:bg-white/[0.03] transition-all overflow-hidden">
+            <div aria-hidden className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+              style={{ background: "radial-gradient(180px circle at 50% 0%, rgba(16,185,129,0.08), transparent 70%)" }} />
+            <div className="relative">
+              <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-emerald-400/50 mb-2">{p.os}</p>
+              <p className="text-[14px] font-medium text-white/90 mb-1">{p.file}</p>
+              <p className="text-[11.5px] text-white/35">{p.note}</p>
+              <div className="mt-4 flex items-center gap-1.5 text-[12px] text-white/60 group-hover:text-white transition-colors">
+                <Download className="size-3.5" /> Download
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
       <p>
         On first launch, Nori creates a configuration directory at <InlineCode>~/.nori/</InlineCode>{" "}
         (or <InlineCode>%USERPROFILE%\\.nori\\</InlineCode> on Windows) containing your settings, history, and shell integration scripts.
       </p>
       <Callout>
-        A pre-built Windows x86_64 binary is available from the{" "}
-        <Link to="/download" className="text-white/80 underline underline-offset-2">download page</Link>.
-        macOS and Linux builds are coming soon.
+        See all releases and changelogs on{" "}
+        <a href="https://github.com/Aethlon/Nori/releases" target="_blank" rel="noreferrer" className="text-white/80 underline underline-offset-2 decoration-white/20 hover:decoration-white/50 transition-colors">GitHub Releases</a>.
+        Or visit the <Link to="/download" className="text-white/80 underline underline-offset-2">download page</Link>.
       </Callout>
       <div className="not-prose rounded-2xl border border-white/[0.05] bg-white/[0.015] overflow-hidden">
         <div className="px-5 py-3 border-b border-white/[0.04] bg-white/[0.02]">
-          <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-white/30">System Requirements</p>
+          <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-white/30">Recommended</p>
         </div>
         <div className="divide-y divide-white/[0.04]">
           {[
-            { name: "Rust", version: "1.75+", note: "Install via rustup.rs" },
-            { name: "Cargo", version: "bundled", note: "Comes with Rust toolchain" },
             { name: "Git", version: "2.x+", note: "For repository features" },
             { name: "Docker", version: "optional", note: "For container management panel" },
             { name: "Nerd Font", version: "any", note: "For glyph rendering (recommended)" },

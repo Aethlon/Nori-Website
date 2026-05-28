@@ -124,7 +124,7 @@ function DownloadPage() {
           <p className="reveal text-[10px] font-mono uppercase tracking-[0.3em] text-white/40 mb-5">
             v0.1.0 · Developer Preview · Built with Rust + Tauri
           </p>
-          <h1 className="reveal text-5xl sm:text-6xl md:text-7xl font-medium tracking-[-0.045em] leading-[0.95] text-gradient-soft">
+          <h1 className="reveal text-5xl sm:text-6xl md:text-7xl font-medium tracking-[-0.045em] leading-[0.95] text-gradient-animated">
             Get Nori.
           </h1>
           <p className="reveal mt-5 text-white/50 max-w-md mx-auto text-[15px] leading-relaxed">
@@ -135,7 +135,7 @@ function DownloadPage() {
           {primaryPlatform && (
             <div className="reveal mt-10">
               <a href={primaryPlatform.downloadUrl}
-                className="group inline-flex items-center gap-3 rounded-2xl bg-white text-[#0A0A0A] px-8 py-4 text-[15px] font-medium hover:bg-white/90 hover:shadow-[0_0_40px_rgba(255,255,255,0.1)] transition-all duration-300 hover:-translate-y-0.5">
+                className="group inline-flex items-center gap-3 rounded-2xl bg-white text-[#0A0A0A] px-8 py-4 text-[15px] font-medium hover-lift hover:shadow-[0_12px_50px_rgba(255,255,255,0.18)] transition-all duration-300">
                 <Download className="size-5 transition-transform group-hover:translate-y-0.5" />
                 Download for {primaryPlatform.label}
               </a>
@@ -161,13 +161,14 @@ function DownloadPage() {
       <section className="mx-auto max-w-3xl px-5 sm:px-8 pb-16">
         <p className="reveal font-mono text-[9px] uppercase tracking-[0.25em] text-white/20 mb-4">All platforms</p>
         <div className="space-y-3">
-          {sortedPlatforms.map((platform) => {
+          {sortedPlatforms.map((platform, idx) => {
             const isDetected = platform.id === detectedPlatform && detectedPlatform !== "unknown";
             return (
               <div key={platform.id}
-                className={`reveal group rounded-2xl border overflow-hidden transition-all duration-300 border-white/[0.06] hover:border-white/[0.12] bg-white/[0.015]`}>
+                style={{ animationDelay: `${idx * 80}ms` }}
+                className={`reveal animate-fade-in-scale group rounded-2xl border overflow-hidden transition-all duration-300 hover-lift border-white/[0.06] hover:border-white/[0.14] bg-white/[0.015] hover:bg-white/[0.025] hover:shadow-[0_8px_30px_rgba(0,0,0,0.4)]`}>
                 <div className="flex items-center gap-5 px-6 py-5">
-                  <div className="size-11 rounded-xl grid place-items-center shrink-0 bg-white/[0.04] border border-white/[0.06] text-white/70">
+                  <div className="size-11 rounded-xl grid place-items-center shrink-0 bg-white/[0.04] border border-white/[0.06] text-white/70 group-hover:border-white/[0.14] group-hover:text-white/90 transition-all duration-300">
                     {platform.icon}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -176,7 +177,7 @@ function DownloadPage() {
                         {platform.label}
                       </h3>
                       {isDetected && (
-                        <span className="font-mono text-[9px] text-emerald-400/60 bg-emerald-500/[0.06] border border-emerald-500/[0.1] rounded-full px-2 py-0.5 uppercase tracking-[0.1em]">
+                        <span className="font-mono text-[9px] text-emerald-400/70 bg-emerald-500/[0.08] border border-emerald-500/[0.14] rounded-full px-2 py-0.5 uppercase tracking-[0.1em] animate-soft-glow">
                           detected
                         </span>
                       )}
@@ -190,12 +191,12 @@ function DownloadPage() {
                   <div className="shrink-0 flex items-center gap-2">
                     {platform.altDownloads?.map((alt) => (
                       <a key={alt.label} href={alt.url}
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2 text-[11px] text-white/50 hover:text-white/80 hover:border-white/[0.12] transition-all">
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2 text-[11px] text-white/50 hover:text-white hover:border-white/[0.16] hover:bg-white/[0.05] transition-all duration-200">
                         {alt.label}
                       </a>
                     ))}
                     <a href={platform.downloadUrl}
-                      className="inline-flex items-center gap-2 rounded-xl bg-white text-[#0A0A0A] px-5 py-2.5 text-[13px] font-medium hover:bg-white/90 transition-all">
+                      className="inline-flex items-center gap-2 rounded-xl bg-white text-[#0A0A0A] px-5 py-2.5 text-[13px] font-medium hover:bg-white/95 hover:shadow-[0_4px_16px_rgba(255,255,255,0.12)] transition-all duration-200">
                       <Download className="size-3.5" />
                       {platform.fileType}
                     </a>
